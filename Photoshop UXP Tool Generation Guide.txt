@@ -1,0 +1,568 @@
+﻿Architectural Specification: Adobe Photoshop Model Context Protocol (MCP) Bridge via Unified Extensibility Platform (UXP)
+1. Executive Summary and Operational Context
+The intersection of generative artificial intelligence and professional creative workflows has necessitated a fundamental re-evaluation of how software extensibility is architected. This document serves as a comprehensive technical specification and implementation guide for establishing a Model Context Protocol (MCP) bridge for Adobe Photoshop. The primary objective is to enable an orchestration layer—driven by Large Language Models (LLMs) such as Claude Code—to perceive, reason about, and manipulate the complex internal state of Photoshop through a standardized interface.
+Traditionally, automation within the Adobe ecosystem relied on rigid scripting interfaces such as ExtendScript (ES3) or COM/AppleScript automation, which lack the requisite speed, modern networking capabilities, and asynchronous event handling required for real-time AI interaction.1 The introduction of the Unified Extensibility Platform (UXP), utilizing a V8 JavaScript engine, provides the necessary foundation for this integration.1 However, UXP's sandboxed environment and specific security models present unique challenges that require a multi-tiered architectural approach.3
+This report parses the extensive Adobe UXP documentation and available research materials to provide an exhaustive documentation set for generating the necessary MCP tools. It details the mechanisms for bridging the gap between local MCP clients and the Photoshop UXP runtime, creating a robust "context loop" where the AI not only executes commands but continuously ingests application state to inform subsequent actions.5 The scope includes network architecture, detailed batchPlay command construction, tool definition schemas, state synchronization strategies, and security compliance.
+2. System Architecture and Integration Topology
+The deployment of an MCP server for a desktop application like Photoshop requires bridging three distinct execution environments: the local operating system where the LLM client resides, the ephemeral network layer, and the sandboxed internal runtime of the Adobe application. A direct connection is often obfuscated by UXP's network isolation policies, necessitating a proxy-based design.
+2.1 The Three-Tier Bridge Architecture
+The architecture is defined by three primary components that function in a synchronous pipeline to translate natural language intent into pixel-level operations.
+2.1.1 Tier 1: The MCP Server (Python/Node.js)
+This component resides on the host machine (outside Photoshop) and adheres to the Model Context Protocol specification.7 It is responsible for:
+* Tool Exposure: Broadcasting the available capabilities (e.g., create_layer, apply_filter) to the MCP client (Claude Desktop or IDE).
+* Protocol Translation: Converting JSON-RPC messages from the AI client into a standardized command format understood by the proxy.
+* Process Management: In some implementations, this server may also manage the lifecycle of the proxy server or the Adobe application itself.4
+2.1.2 Tier 2: The WebSocket Gateway (Node.js Proxy)
+UXP plugins are unable to host standard TCP servers that are easily discoverable by external processes due to sandbox restrictions. Therefore, a Node.js proxy server is required to act as the "store-and-forward" mechanism.
+* Function: It listens on a known local port (e.g., 3001) for connections from both the MCP Server and the UXP Plugin.
+* Routing Logic: When the MCP Server sends a command, the proxy holds it in a queue or immediately forwards it to the active WebSocket connection maintained by the Photoshop plugin. Conversely, it routes success/error payloads from Photoshop back to the MCP Server.3
+2.1.3 Tier 3: The UXP Orchestrator Plugin
+Embedded within Photoshop, this plugin is the execution engine. It utilizes the photoshop core module and the uxp network APIs to maintain a persistent connection to the Gateway.
+* Responsibilities: It receives JSON payloads, parses the tool and parameters, maps them to specific internal API calls (primarily batchPlay), and returns the result.
+* State Access: It has direct access to the Photoshop DOM (Document Object Model) and the raw Event Manager, allowing it to query layer structures, history states, and selection bounds.1
+2.2 Data Flow and Latency Considerations
+The round-trip time (RTT) for an MCP command in this topology involves multiple hops:
+1. AI Client -> (JSON-RPC) -> MCP Server
+2. MCP Server -> (HTTP/Socket) -> Gateway
+3. Gateway -> (WebSocket) -> UXP Plugin
+4. UXP Plugin -> (BatchPlay Execution) -> Photoshop Core
+5. Photoshop Core -> (Result) -> UXP Plugin
+6. UXP Plugin -> (WebSocket) -> Gateway -> MCP Server -> AI Client
+Despite these hops, the use of WebSockets (as opposed to polling) ensures millisecond-level latency for the transport layer. The primary bottleneck is the batchPlay execution within Photoshop, particularly for image-intensive operations like filters or smart object rendering.9
+Component
+	Technology
+	Primary Function
+	Constraints
+	MCP Client
+	Claude Desktop/IDE
+	Orchestration Logic
+	Context window limits
+	MCP Server
+	Python 3.10+
+	Interface Standardization
+	Must run locally
+	Proxy
+	Node.js 18+
+	Message Bus
+	Port availability
+	UXP Plugin
+	JS / HTML / V8
+	Execution
+	Sandbox, UI thread blocking
+	3. Network Communication and Security
+The reliability of the bridge depends entirely on the implementation of the communication layer. UXP provides a modern networking stack, but strict adherence to manifest permissions and protocol selection is required.
+3.1 WebSocket Implementation Strategy
+While socket.io is a popular library for Node.js applications, its integration into UXP is problematic due to the specific way UXP handles the window object and binary data. Research suggests that the native WebSocket API, which is compliant with the W3C standard, is the preferred method for UXP plugins.11
+3.1.1 UXP Client-Side Code
+The plugin initiates the connection to the Gateway. It must handle reconnection logic aggressively, as Photoshop may suspend plugin execution when the application loses focus or during heavy modal operations.
+
+
+JavaScript
+
+
+
+
+// UXP WebSocket Client - core/network.js
+const { entrypoints } = require("uxp");
+
+let socket;
+const RETRY_INTERVAL = 3000;
+
+function connectToGateway() {
+   console.log("Attempting connection to MCP Gateway...");
+   try {
+       // Localhost connection requires manifest permission
+       socket = new WebSocket("ws://localhost:3001");
+       
+       socket.onopen = () => {
+           console.log("Gateway Connected");
+           socket.send(JSON.stringify({ type: "HANDSHAKE", client: "PHOTOSHOP_UXP" }));
+       };
+
+       socket.onmessage = async (event) => {
+           const payload = JSON.parse(event.data);
+           await handleCommand(payload);
+       };
+
+       socket.onclose = (e) => {
+           console.warn("Gateway Disconnected. Retrying...", e.reason);
+           setTimeout(connectToGateway, RETRY_INTERVAL);
+       };
+
+       socket.onerror = (err) => {
+           console.error("WebSocket Error:", err);
+           socket.close();
+       };
+
+   } catch (e) {
+       console.error("Connection failed:", e);
+   }
+}
+
+3.2 Manifest V5 Permissions
+For the above code to function, the manifest.json file must explicitly allow the connection. UXP defaults to blocking all network traffic.
+* Version Requirement: Manifest Version 5 is the current standard.
+* Network Domains: The specific domain/IP must be whitelisted. Wildcards in top-level domains are restricted in UXP v7.4.0+, so specific localhost definitions are necessary.11
+
+
+JSON
+
+
+
+
+{
+ "manifestVersion": 5,
+ "id": "com.mcp.photoshop.bridge",
+ "name": "MCP Bridge",
+ "version": "1.0.0",
+ "main": "index.html",
+ "requiredPermissions": {
+   "network": {
+     "domains": [
+       "ws://localhost:3001",
+       "ws://127.0.0.1:3001"
+     ]
+   },
+   "localFileSystem": "fullAccess" 
+ }
+}
+
+Note: localFileSystem: "fullAccess" is typically restricted to developer mode or enterprise-signed plugins. For general distribution, specific implementation of the fs module entry points is required.13
+4. The Execution Engine: BatchPlay vs. DOM
+To create a document "for generating the tools," one must fundamentally understand the two methods of controlling Photoshop: the DOM (Document Object Model) and batchPlay.
+4.1 The Limits of the DOM
+The UXP DOM serves as a convenient, high-level wrapper. It allows readable code such as app.activeDocument.layers.name = "New Name". However, the DOM coverage is incomplete. It covers approximately 60-70% of common workflows but fails to address:
+* Specific filter parameters (e.g., "Add Noise" with a specific distribution).
+* Complex selection modifications (e.g., "Contract selection by 5px").
+* UI-specific toggles (e.g., Tool options, Preference changes).
+* Deep access to Action Manager descriptors.1
+4.2 The BatchPlay Paradigm
+batchPlay is the successor to ExtendScript's executeAction. It is the raw command pipeline into Photoshop's core. For an MCP bridge designed to be "exhaustive," batchPlay is the primary engine. It accepts arrays of Action Descriptors defined in JSON, allowing for the execution of multiple commands in a single request—a critical optimization for AI agents that might generate complex multi-step instructions.9
+4.2.1 Anatomy of an Action Descriptor
+The "language" of batchPlay consists of three grammatical components:
+1. The Command (_obj): The verb (e.g., set, make, delete, gaussianBlur).
+2. The Target (_target): The noun (the object acted upon). This uses a reference chain.
+3. The Parameters: The adjectives/adverbs (specific settings).
+Example: The Reference Chain
+Targeting logic in Photoshop is reverse-hierarchical. To target the active layer, you do not point to the layer ID directly (unless known); you point to the "ordinal" target enum.
+
+
+JSON
+
+
+
+
+"_target":
+
+This structure must be replicated in the MCP tool generation documentation. Every tool generated must construct this _target array dynamically based on whether the AI wants to act on the "active" item or a specific named item.10
+4.3 Modal Execution Context
+A critical requirement for UXP scripts that modify the document state is the executeAsModal wrapper. Unlike ExtendScript, UXP scripts run asynchronously alongside the UI. If a script attempts to modify a layer while the user is painting, it will crash or fail.
+* Requirement: All batchPlay commands that write data must be wrapped in require("photoshop").core.executeAsModal.
+* History Suspension: This wrapper also allows for "History Suspension," where multiple batchPlay steps (e.g., "Create Layer", "Fill Red", "Blur") are grouped into a single History State named by the AI (e.g., "AI: Red Glow Effect"). This is essential for user usability.9
+5. Tool Generation Strategy and Schemas
+This section constitutes the core documentation for "generating the tools." It provides the templates and logic required to parse Photoshop's internal actions into MCP-compatible JSON schemas. The strategy relies on defining a generic execute_batchplay tool for flexibility and specific, typed tools for reliability.
+5.1 The Universal Tool: execute_raw_batchplay
+While specific tools are safer, the AI needs an escape hatch for capabilities not yet explicitly mapped.
+* MCP Tool Name: execute_photoshop_action
+* Description: Executes a raw Photoshop JSON Action Descriptor. Use this for advanced operations like specific filters or transformations not covered by other tools.
+* Input Schema:
+JSON
+{
+ "type": "object",
+ "properties": {
+   "descriptor": { "type": "object", "description": "The batchPlay JSON object containing _obj and _target" },
+   "history_name": { "type": "string", "description": "Label for the History panel" }
+ },
+ "required": ["descriptor"]
+}
+
+* UXP Handler:
+JavaScript
+async function handleRawAction(payload) {
+   return await require("photoshop").core.executeAsModal(async () => {
+       return await require("photoshop").action.batchPlay([payload.descriptor], {});
+   }, { commandName: payload.history_name |
+
+
+| "AI Action" });
+}
+```
+5.2 Category 1: Layer Management Tools
+Layers are the fundamental unit of Photoshop. The MCP must support creation, deletion, organization, and property modification.
+Tool: create_layer
+   * Description: Creates a new layer of a specified type (pixel, group, text).
+   * Schema Generation Logic: The make command is used.
+   * BatchPlay Template:
+JSON
+{
+ "_obj": "make",
+ "_target": [{ "_ref": "layer" }],
+ "using": { "_obj": "layer", "name": "Variable:LayerName" }
+}
+
+Insight: If the type is "group", the using parameter changes to { "_obj": "layerSection" }. If "text", it becomes a complex textLayer object. The generator code must handle these polymorphism cases.16
+Tool: set_layer_property
+      * Description: Modifies visibility, opacity, blend mode, or lock state.
+      * BatchPlay Template (Opacity):
+JSON
+{
+ "_obj": "set",
+ "_target": [{ "_ref": "layer", "_enum": "ordinal", "_value": "targetEnum" }],
+ "to": { "_obj": "layer", "opacity": { "_unit": "percentUnit", "_value": "Variable:0-100" } }
+}
+
+Critical Detail: Note the _unit object. The AI might send a simple integer 50. The tool generator must include logic to wrap this in { "_unit": "percentUnit", "_value": 50 } before execution.9
+Tool: select_layers
+         * Description: Selects one or multiple layers by name or ID.
+         * Insight: Selecting multiple layers requires the addToSelectionContinuous or addToSelectionGlued modifier in the selectionModifier parameter of the select command.
+         * BatchPlay Template:
+JSON
+{
+  "_obj": "select",
+  "_target":,
+  "selectionModifier": { "_enum": "selectionModifierType", "_value": "addToSelection" },
+  "makeVisible": false
+}
+
+This allows the AI to build up a multi-layer selection context.17
+5.3 Category 2: Text and Typography Tools
+Text manipulation is a high-demand feature for AI automation (e.g., "Create a title card for this video").
+Tool: create_text_layer
+            * Schema: text (string), font_postscript_name (string), size (number), color_hex (string), position (array [x,y]).
+            * Complexity Analysis: Creating text via batchPlay is notoriously verbose. It requires defining the textLayer object, which contains the textClickPoint (position), textKey (content), and textStyleRange (styling).
+            * Font Handling: The font_postscript_name must be exact (e.g., "Helvetica-Bold"). The tool generator documentation must advise implementing a get_available_fonts tool so the AI can query the system before requesting a font, preventing errors.2
+            * Color Conversion: The MCP payload will likely use Hex strings ("#FF0000"). The UXP bridge must contain a utility function to convert Hex to the Photoshop color object:
+JSON
+{ "_obj": "RGBColor", "red": 255, "green": 0, "blue": 0 }
+
+Failing to perform this conversion on the bridge side will cause the batchPlay command to fail.2
+5.4 Category 3: Selection and Masking Tools
+AI agents often need to restrict their operations to specific areas (e.g., "Select the subject and blur the background").
+Tool: make_selection
+               * Schema: shape (rect, ellipse, polygon), bounds (object {top, left, bottom, right}), operation (new, add, subtract, intersect).
+               * BatchPlay Template (Rectangle):
+JSON
+{
+ "_obj": "set",
+ "_target": [{ "_ref": "channel", "_property": "selection" }],
+ "to": {
+   "_obj": "rectangle",
+   "top": { "_unit": "pixelsUnit", "_value": "Variable:Top" },
+   "left": { "_unit": "pixelsUnit", "_value": "Variable:Left" },
+   "bottom": { "_unit": "pixelsUnit", "_value": "Variable:Bottom" },
+   "right": { "_unit": "pixelsUnit", "_value": "Variable:Right" }
+ }
+}
+
+Insight: The _target is {_ref: "channel", _property: "selection"}. This is a unique referencing pattern distinct from layers or documents.21
+Tool: select_subject
+                  * Description: Triggers Photoshop's AI-based Subject Selection.
+                  * BatchPlay Template:
+JSON
+{ 
+ "_obj": "autoCutout", 
+ "sampleAllLayers": false 
+}
+
+This simple command leverages the massive internal AI of Photoshop, exposing it cheaply to the external AI agent.2
+5.5 Category 4: Filter and Adjustment Tools
+This category is where batchPlay is indispensable, as the DOM lacks support for most filters.
+Tool: apply_gaussian_blur
+                     * Schema: radius (number, 0.1-250).
+                     * BatchPlay Template:
+JSON
+{
+ "_obj": "gaussianBlur",
+ "_target": [
+   { "_ref": "layer", "_enum": "ordinal", "_value": "targetEnum" },
+   { "_ref": "document", "_enum": "ordinal", "_value": "targetEnum" }
+ ],
+ "radius": { "_unit": "pixelsUnit", "_value": "Variable:Radius" }
+}
+
+Generation Note: The tool generator should define a generic "Filter Template" where only the _obj name (e.g., unsharpMask, motionBlur) and the specific parameter object change.23
+Tool: create_adjustment_layer
+                        * Schema: type (curves, levels, hueSaturation), parameters (object).
+                        * BatchPlay Template:
+JSON
+{
+   "_obj": "make",
+   "_target": [{ "_ref": "adjustmentLayer" }],
+   "using": { "_obj": "adjustmentLayer", "type": { "_obj": "curves",... } }
+}
+
+This structure is notably different from creating a standard layer. The _ref target is adjustmentLayer, which acts as a virtual class during creation.24
+6. State Synchronization and Context Injection
+For the Model Context Protocol to function effectively, the "Context" part is paramount. The AI cannot edit what it cannot see. The bridge must implement robust state retrieval tools.
+6.1 The get_document_state Tool
+This tool acts as the "eyes" of the AI.
+                           * Function: Returns a JSON tree of the document.
+                           * Implementation: Retrieving the full property tree of a complex document can be slow and token-expensive. The tool should leverage multiGet in batchPlay to request specific properties (name, id, visible, opacity, bounds) rather than the entire object graph.
+
+
+JavaScript
+
+
+
+
+// Optimized State Retrieval
+const result = await require("photoshop").action.batchPlay([{
+   _obj: "get",
+   _target: [{ _ref: "document", _enum: "ordinal", _value: "targetEnum" }],
+   _options: { dialogOptions: "dontDisplay" }
+}], {});
+// Post-processing: Prune large binary strings or histograms before sending to MCP
+
+2
+6.2 Visual Feedback (Screenshots)
+Textual descriptions of layers are often insufficient. The bridge should support a get_screenshot tool.
+                           * Mechanism: Use UXP's save command to export a low-resolution JPG of the current state to a temporary folder, read the bytes using fs, and send the Base64 string back over the WebSocket.
+                           * Use Case: Allows the AI to "see" if the Gaussian Blur was effective or if the text placement obscures a subject.25
+7. Error Handling and Resilience
+The bridge must be resilient to the frequent errors returned by the Photoshop engine (e.g., "Command not available", "User cancelled").
+7.1 Parsing BatchPlay Errors
+batchPlay does not always throw JavaScript exceptions. It often returns an array containing an error object.
+                           * Pattern:
+JavaScript
+const results = await batchPlay([cmd], {});
+const result = results;
+if (result && result.message) {
+   // This is a Photoshop internal error (e.g., "Layer is locked")
+   throw new Error(`PS Error: ${result.message} (Code: ${result.result})`);
+}
+
+The MCP response payload must propagate this specific message back to the AI client. A generic "Failed" message prevents the AI from self-correcting (e.g., by unlocking the layer and retrying).10
+8. Development Tools and Debugging
+To generate further tools beyond those documented here, the developer must utilize the Alchemist plugin.
+8.1 The Alchemist Workflow
+Alchemist is a community-developed inspector that listens to the Photoshop event bus.
+                              1. Listener Mode: Enable "Listen to all events." Perform an action in the UI (e.g., "Content-Aware Fill"). Alchemist logs the exact batchPlay descriptor.
+                              2. Parameterization: Copy the JSON. Identify the hardcoded values (Layer IDs, specific coordinates). Replace them with variables in the MCP tool schema.
+                              3. Deployment: Paste the parameterized JSON into the raw_batchplay wrapper or create a dedicated function in the UXP plugin.27
+9. Comprehensive Code Reference
+The following sections provide the foundational code files required to instantiate the system.
+9.1 MCP Server (Python) - server.py
+This script defines the interface for the AI client.
+
+
+Python
+
+
+
+
+from mcp.server.fastmcp import FastMCP
+import asyncio
+import websockets
+import json
+
+mcp = FastMCP("Adobe Photoshop Bridge")
+PROXY_URI = "ws://localhost:3001"
+
+async def send_to_photoshop(command: dict):
+   async with websockets.connect(PROXY_URI) as websocket:
+       # Handshake as MCP Server
+       await websocket.send(json.dumps({"type": "HANDSHAKE", "client": "MCP_SERVER"}))
+       
+       # Send Command
+       await websocket.send(json.dumps(command))
+       
+       # Wait for Response
+       response = await websocket.recv()
+       return json.loads(response)
+
+@mcp.tool()
+async def create_layer(name: str, kind: str = "pixel") -> str:
+   """Create a new layer in the active document.
+   Args:
+       name: The name of the new layer.
+       kind: Type of layer ('pixel', 'group', 'text').
+   """
+   payload = {
+       "tool": "create_layer",
+       "parameters": { "name": name, "kind": kind }
+   }
+   result = await send_to_photoshop(payload)
+   if result.get("status") == "error":
+       return f"Error: {result.get('message')}"
+   return f"Success: Layer '{name}' created. ID: {result.get('data')}"
+
+@mcp.tool()
+async def apply_filter(filter_name: str, radius: float = 0.0) -> str:
+   """Apply a filter to the active layer.
+   Args:
+       filter_name: Name of filter (e.g., 'gaussianBlur').
+       radius: Radius in pixels (if applicable).
+   """
+   payload = {
+       "tool": "apply_filter",
+       "parameters": { "filter_name": filter_name, "radius": radius }
+   }
+   result = await send_to_photoshop(payload)
+   return str(result)
+
+7
+9.2 Gateway Proxy (Node.js) - proxy.js
+This script bridges the Python server and the UXP plugin.
+
+
+JavaScript
+
+
+
+
+const WebSocket = require('ws');
+
+const wss = new WebSocket.Server({ port: 3001 });
+let photoshopSocket = null;
+
+wss.on('connection', function connection(ws) {
+ ws.on('message', function incoming(message) {
+   const data = JSON.parse(message);
+
+   // Identify the connection type
+   if (data.type === 'HANDSHAKE') {
+       if (data.client === 'PHOTOSHOP_UXP') {
+           console.log("Photoshop Connected");
+           photoshopSocket = ws;
+       }
+       return;
+   }
+
+   // Route Command: MCP -> Photoshop
+   if (data.tool && photoshopSocket) {
+       console.log(`Forwarding command: ${data.tool}`);
+       photoshopSocket.send(message); // Forward raw message
+   }
+   
+   // Route Response: Photoshop -> MCP (Response handling logic required here)
+   // In a full implementation, we need request IDs to map responses back to the correct server connection.
+ });
+});
+
+console.log("MCP Gateway running on port 3001");
+
+3
+9.3 UXP Plugin Logic (JavaScript) - index.js
+The execution logic inside Photoshop.
+
+
+JavaScript
+
+
+
+
+const { app, core } = require("photoshop");
+const batchPlay = require("photoshop").action.batchPlay;
+
+// --- Tool Implementations ---
+const tools = {
+   async create_layer(params) {
+       return await core.executeAsModal(async () => {
+           const descriptor = {
+               _obj: "make",
+               _target: [{ _ref: "layer" }],
+               using: { _obj: "layer", name: params.name }
+           };
+           const result = await batchPlay([descriptor], {});
+           return result; // Return result for ID extraction
+       }, { commandName: "Create AI Layer" });
+   },
+
+   async apply_filter(params) {
+       if (params.filter_name === "gaussianBlur") {
+           return await core.executeAsModal(async () => {
+               const descriptor = {
+                   _obj: "gaussianBlur",
+                   _target: [
+                       { _ref: "layer", _enum: "ordinal", _value: "targetEnum" },
+                       { _ref: "document", _enum: "ordinal", _value: "targetEnum" }
+                   ],
+                   radius: { _unit: "pixelsUnit", _value: params.radius }
+               };
+               return await batchPlay([descriptor], {});
+           }, { commandName: "AI Blur" });
+       }
+       throw new Error(`Unknown filter: ${params.filter_name}`);
+   }
+};
+
+// --- WebSocket Handler ---
+let socket = new WebSocket("ws://localhost:3001");
+
+socket.onopen = () => {
+   socket.send(JSON.stringify({ type: "HANDSHAKE", client: "PHOTOSHOP_UXP" }));
+};
+
+socket.onmessage = async (event) => {
+   const payload = JSON.parse(event.data);
+   
+   if (tools[payload.tool]) {
+       try {
+           const result = await tools[payload.tool](payload.parameters);
+           // Send Success Response (Implementation dependent on Proxy logic)
+           socket.send(JSON.stringify({ status: "success", data: result }));
+       } catch (err) {
+           socket.send(JSON.stringify({ status: "error", message: err.message }));
+       }
+   }
+};
+
+2
+10. Conclusion
+The construction of an MCP bridge for Adobe Photoshop represents a significant advancement in creative automation. By leveraging the specific capabilities of UXP—namely the V8 engine, Native WebSockets, and the granular control of batchPlay—developers can create a robust environment where AI agents like Claude can meaningfully participate in the creative process.
+This specification has detailed the necessary three-tier architecture to bypass sandbox restrictions, the imperative of using batchPlay over the DOM for exhaustive tool coverage, and the specific schemas required to map natural language intent to Photoshop's internal Action Descriptors. The successful implementation of this bridge transforms Photoshop from a passive tool into an active, intelligent partner in the digital workflow.
+Appendix A: BatchPlay Descriptor Quick Reference
+Action
+	_obj
+	Target Reference Chain (_target)
+	Critical Parameters
+	Select Layer
+	select
+	[{_ref: "layer", _name: "Name"}]
+	makeVisible: false
+	Hide Layer
+	hide
+	[{_ref: "layer", _enum: "ordinal", _value: "targetEnum"}]
+	None
+	Opacity
+	set
+	[{_ref: "layer"...}]
+	to: {_obj: "layer", opacity: {_unit: "percentUnit", _value: 50}}
+	Transform
+	transform
+	[{_ref: "layer"...}]
+	freeTransformCenterState, offset, width, height
+	Set Selection
+	set
+	[{_ref: "channel", _property: "selection"}]
+	to: {_obj: "rectangle", top:..., left:...}
+	10
+Works cited
+                              1. UXP Scripting - Adobe Developer, accessed January 22, 2026, https://developer.adobe.com/photoshop/uxp/2022/scripting/
+                              2. Photoshop API—UXP for Adobe Photoshop, accessed January 22, 2026, https://developer.adobe.com/photoshop/uxp/2022/ps_reference/
+                              3. david-t-martel/adobe-mcp: Unified MCP server for Adobe ... - GitHub, accessed January 22, 2026, https://github.com/david-t-martel/adobe-mcp
+                              4. Exploring AI Integrations with Adobe Photoshop, InDesign and Premiere Pro, accessed January 22, 2026, https://www.mikechambers.com/blog/post/2025-06-06-exploring-ai-integration-with-adobe-photoshop-indesign-and-premiere-pro/
+                              5. Model Context Protocol (MCP). MCP is an open protocol that… | by Aserdargun, accessed January 22, 2026, https://medium.com/@aserdargun/model-context-protocol-mcp-e453b47cf254
+                              6. Build Your Own Model Context Protocol Server | by C. L. Beard | BrainScriblr, accessed January 22, 2026, https://medium.com/brainscriblr/build-your-own-model-context-protocol-server-0207625472d0
+                              7. adb-mcp MCP Server - playbooks, accessed January 22, 2026, https://playbooks.com/mcp/mikechambers-adobe-creative-suite
+                              8. The AI Engineer's Guide to Mike Chambers's Adobe Creative Suite MCP Server, accessed January 22, 2026, https://skywork.ai/skypage/en/ai-engineer-guide-adobe-creative-suite/1978660696470364160
+                              9. BatchPlay Details - Adobe Developer, accessed January 22, 2026, https://developer.adobe.com/photoshop/uxp/2021/ps_reference/media/advanced/batchplay/
+                              10. BatchPlay Details - Adobe Developer, accessed January 22, 2026, https://developer.adobe.com/photoshop/uxp/2022/ps_reference/media/batchplay/
+                              11. window.WebSocket - Adobe Developer, accessed January 22, 2026, https://developer.adobe.com/photoshop/uxp/2022/uxp-api/reference-js/Global%20Members/Data%20Transfers/WebSocket/
+                              12. Adobe Photoshop UXP Plugin - Web Sockets?, accessed January 22, 2026, https://community.adobe.com/t5/photoshop-ecosystem-discussions/adobe-photoshop-uxp-plugin-web-sockets/td-p/12636735
+                              13. Filesystem Operations - Adobe Developer, accessed January 22, 2026, https://developer.adobe.com/premiere-pro/uxp/resources/recipes/filesystem-operations/
+                              14. require('fs') - Adobe Developer, accessed January 22, 2026, https://developer.adobe.com/photoshop/uxp/2022/uxp-api/reference-js/Modules/fs/
+                              15. batchPlay - Adobe Developer, accessed January 22, 2026, https://developer.adobe.com/photoshop/uxp/2021/guides/ps_basics/batchplay_intro/
+                              16. Using the ActionJSON Endpoint - Adobe Developer, accessed January 22, 2026, https://developer.adobe.com/firefly-services/docs/photoshop/guides/actionjson_endpoint/
+                              17. Re: How to select multiple layers with UXP - Adobe Product Community, accessed January 22, 2026, https://community.adobe.com/t5/photoshop/how-to-select-multiple-layers-with-uxp/m-p/11744227
+                              18. Select layers - Adobe Help Center, accessed January 22, 2026, https://helpx.adobe.com/photoshop/desktop/create-manage-layers/transform-manipulate-layers/select-layers.html
+                              19. Adobe UXP: Things you need to know! #6 BatchPlay (part 1): the ActionManager roots, accessed January 22, 2026, https://www.youtube.com/watch?v=vSVrFPCe7DU
+                              20. UXP Scripting in Photoshop - Adobe Developer, accessed January 22, 2026, https://developer.adobe.com/photoshop/uxp/2022/ps_reference/media/uxpscripting/
+                              21. Selection - Adobe Developer, accessed January 22, 2026, https://developer.adobe.com/photoshop/uxp/2022/ps_reference/classes/selection/
+                              22. Extending DOM APIs - Adobe Developer, accessed January 22, 2026, https://developer.adobe.com/photoshop/uxp/2022/ps_reference/media/prototype/
+                              23. Simple JSX scritpt to applu Gaussian Blur in PS - Adobe Product Community - 14658333, accessed January 22, 2026, https://community.adobe.com/t5/photoshop-ecosystem-discussions/simple-jsx-scritpt-to-applu-gaussian-blur-in-ps/td-p/14658333
+                              24. How Can I Apply Gaussian Blur as an Adjustment Layer in Photoshop? - Reddit, accessed January 22, 2026, https://www.reddit.com/r/photoshop/comments/1gyl14j/how_can_i_apply_gaussian_blur_as_an_adjustment/
+                              25. Understanding UXP APIs - Adobe Developer, accessed January 22, 2026, https://developer.adobe.com/premiere-pro/uxp/resources/fundamentals/apis/
+                              26. How To Make Network Requests - Adobe Developer, accessed January 22, 2026, https://developer.adobe.com/xd/uxp/develop/tutorials/how-to-make-network-requests/
+                              27. Adobe UXP: Things you need to know! #6 BatchPlay (part 1): the ActionManager roots, accessed January 22, 2026, https://www.davidebarranca.com/development/adobe-uxp-things-you-need-to-know-6-batchplay-part-1-actionmanager-roots
+                              28. Adobe UXP: Things you need to know! #7 BatchPlay (part 2): the Alchemist plugin as a Listener | Davide Barranca — Photoshop, etc., accessed January 22, 2026, https://www.davidebarranca.com/development/adobe-uxp-things-you-need-to-know-7-batchplay-part-2-alchemist-plugin-listener

@@ -12,6 +12,10 @@ import { layerTools } from "./layer.js";
 import { selectionTools } from "./selection.js";
 import { adjustmentTools } from "./adjustment.js";
 import { historyTools } from "./history.js";
+import { filterTools } from "./filter.js";
+import { transformTools } from "./transform.js";
+import { textTools } from "./text.js";
+import { utilityTools } from "./utility.js";
 
 export interface ToolResponse {
   ok: boolean;
@@ -56,7 +60,7 @@ export function createToolRegistry(bridge: PhotoshopBridge): ToolRegistry {
   const tools = new Map<string, ToolDefinition>();
 
   // Register all tool modules
-  const allTools = [...appTools, ...documentTools, ...layerTools, ...selectionTools, ...adjustmentTools, ...historyTools];
+  const allTools = [...appTools, ...documentTools, ...layerTools, ...selectionTools, ...adjustmentTools, ...historyTools, ...filterTools, ...transformTools, ...textTools, ...utilityTools];
 
   for (const tool of allTools) {
     tools.set(tool.name, tool);
