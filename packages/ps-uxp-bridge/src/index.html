@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>MCP Bridge</title>
+        <style>
+            :root {
+                --bg-color: #323232;
+                --text-color: #e0e0e0;
+                --accent-color: #0d99ff;
+                --success-color: #4caf50;
+                --error-color: #f44336;
+                --border-color: #505050;
+            }
+
+            body {
+                font-family:
+                    "Adobe Clean",
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    sans-serif;
+                font-size: 12px;
+                margin: 0;
+                padding: 12px;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+            }
+
+            h2 {
+                margin: 0 0 12px 0;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .status-row {
+                display: flex;
+                align-items: center;
+                margin-bottom: 8px;
+            }
+
+            .status-indicator {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                margin-right: 8px;
+            }
+
+            .status-indicator.connected {
+                background-color: var(--success-color);
+            }
+
+            .status-indicator.disconnected {
+                background-color: var(--error-color);
+            }
+
+            .status-indicator.connecting {
+                background-color: #ff9800;
+                animation: pulse 1s infinite;
+            }
+
+            @keyframes pulse {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.5;
+                }
+            }
+
+            .btn {
+                background-color: var(--accent-color);
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+                margin-right: 8px;
+            }
+
+            .btn:hover {
+                opacity: 0.9;
+            }
+
+            .btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+            .btn-secondary {
+                background-color: var(--border-color);
+            }
+
+            .log-container {
+                margin-top: 12px;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                max-height: 120px;
+                overflow-y: auto;
+                background-color: #2a2a2a;
+            }
+
+            .log-entry {
+                padding: 4px 8px;
+                border-bottom: 1px solid var(--border-color);
+                font-family: monospace;
+                font-size: 10px;
+                word-break: break-all;
+            }
+
+            .log-entry:last-child {
+                border-bottom: none;
+            }
+
+            .log-entry.info {
+                color: var(--text-color);
+            }
+            .log-entry.success {
+                color: var(--success-color);
+            }
+            .log-entry.error {
+                color: var(--error-color);
+            }
+
+            .actions {
+                margin-top: 12px;
+            }
+
+            .server-url {
+                width: 100%;
+                padding: 6px;
+                margin-bottom: 8px;
+                border: 1px solid var(--border-color);
+                border-radius: 4px;
+                background-color: #2a2a2a;
+                color: var(--text-color);
+                font-size: 11px;
+                box-sizing: border-box;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>MCP Bridge</h2>
+
+        <div class="status-row">
+            <div
+                id="statusIndicator"
+                class="status-indicator disconnected"
+            ></div>
+            <span id="statusText">Disconnected</span>
+        </div>
+
+        <input
+            type="text"
+            id="serverUrl"
+            class="server-url"
+            value="ws://localhost:8765"
+            placeholder="WebSocket URL"
+        />
+
+        <div class="actions">
+            <button id="connectBtn" class="btn">Connect</button>
+            <button id="disconnectBtn" class="btn btn-secondary" disabled>
+                Disconnect
+            </button>
+        </div>
+
+        <div class="log-container">
+            <div id="logContainer"></div>
+        </div>
+
+        <script src="./main.js"></script>
+    </body>
+</html>
