@@ -11,6 +11,7 @@ import { documentTools } from "./document.js";
 import { layerTools } from "./layer.js";
 import { selectionTools } from "./selection.js";
 import { adjustmentTools } from "./adjustment.js";
+import { historyTools } from "./history.js";
 
 export interface ToolResponse {
   ok: boolean;
@@ -55,7 +56,7 @@ export function createToolRegistry(bridge: PhotoshopBridge): ToolRegistry {
   const tools = new Map<string, ToolDefinition>();
 
   // Register all tool modules
-  const allTools = [...appTools, ...documentTools, ...layerTools, ...selectionTools, ...adjustmentTools];
+  const allTools = [...appTools, ...documentTools, ...layerTools, ...selectionTools, ...adjustmentTools, ...historyTools];
 
   for (const tool of allTools) {
     tools.set(tool.name, tool);

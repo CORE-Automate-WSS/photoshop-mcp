@@ -1298,6 +1298,384 @@ commands["fill.solid_color"] = async function (params) {
   }
 };
 
+// ============================================================================
+// History Commands (batchPlay)
+// ============================================================================
+
+commands["history.undo"] = async function (_params) {
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "select",
+              _target: [
+                {
+                  _ref: "historyState",
+                  _enum: "ordinal",
+                  _value: "previous"
+                }
+              ],
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+      },
+      { commandName: "Undo" }
+    );
+
+    return { ok: true, changed: true, data: { action: "undo" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to undo: ${error.message}` };
+  }
+};
+
+commands["history.redo"] = async function (_params) {
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "select",
+              _target: [
+                {
+                  _ref: "historyState",
+                  _enum: "ordinal",
+                  _value: "next"
+                }
+              ],
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+      },
+      { commandName: "Redo" }
+    );
+
+    return { ok: true, changed: true, data: { action: "redo" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to redo: ${error.message}` };
+  }
+};
+
+commands["history.step_backward"] = async function (params) {
+  const { steps = 1 } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+    await executeAsModal(
+      async () => {
+        for (let i = 0; i < steps; i++) {
+          await batchPlay(
+            [
+              {
+                _obj: "select",
+                _target: [
+                  {
+                    _ref: "historyState",
+                    _enum: "ordinal",
+                    _value: "previous"
+                  }
+                ],
+                _options: { dialogOptions: "dontDisplay" }
+              }
+            ],
+            { synchronousExecution: true }
+          );
+        }
+      },
+      { commandName: "Step Backward" }
+    );
+
+    return { ok: true, changed: true, data: { action: "step_backward", steps } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to step backward: ${error.message}` };
+  }
+};
+
+commands["history.step_forward"] = async function (params) {
+  const { steps = 1 } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+    await executeAsModal(
+      async () => {
+        for (let i = 0; i < steps; i++) {
+          await batchPlay(
+            [
+              {
+                _obj: "select",
+                _target: [
+                  {
+                    _ref: "historyState",
+                    _enum: "ordinal",
+                    _value: "next"
+                  }
+                ],
+                _options: { dialogOptions: "dontDisplay" }
+              }
+            ],
+            { synchronousExecution: true }
+          );
+        }
+      },
+      { commandName: "Step Forward" }
+    );
+
+    return { ok: true, changed: true, data: { action: "step_forward", steps } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to step forward: ${error.message}` };
+  }
+};
+
+commands["history.snapshot_create"] = async function (params) {
+  const { name = "Snapshot", fullDocument = true } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "make",
+              _target: [
+                {
+                  _ref: "snapshotClass"
+                }
+              ],
+              from: {
+                _ref: "historyState",
+                _enum: "ordinal",
+                _value: "currentHistoryState"
+              },
+              name: name,
+              using: {
+                _enum: "historyState",
+                _value: fullDocument ? "fullDocument" : "mergedLayers"
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+      },
+      { commandName: "Create Snapshot" }
+    );
+
+    return { ok: true, changed: true, data: { action: "snapshot_create", name } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create snapshot: ${error.message}` };
+  }
+};
+
+commands["history.goto_state"] = async function (params) {
+  const { name, index } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  if (!name && !index) {
+    return { ok: false, changed: false, error: "Either name or index must be provided" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+    await executeAsModal(
+      async () => {
+        const target = name
+          ? { _ref: "historyState", _name: name }
+          : { _ref: "historyState", _index: index };
+
+        await batchPlay(
+          [
+            {
+              _obj: "select",
+              _target: [target],
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+      },
+      { commandName: "Go to History State" }
+    );
+
+    return { ok: true, changed: true, data: { action: "goto_state", name, index } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to go to history state: ${error.message}` };
+  }
+};
+
+commands["history.clear"] = async function (_params) {
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "delete",
+              _target: [
+                {
+                  _ref: "historyState",
+                  _enum: "ordinal",
+                  _value: "allExceptCurrent"
+                }
+              ],
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+      },
+      { commandName: "Clear History" }
+    );
+
+    return { ok: true, changed: true, data: { action: "clear_history" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to clear history: ${error.message}` };
+  }
+};
+
+commands["history.get_states"] = async function (_params) {
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+    let historyInfo;
+
+    await executeAsModal(
+      async () => {
+        // Get history state count
+        const result = await batchPlay(
+          [
+            {
+              _obj: "get",
+              _target: [
+                {
+                  _property: "count"
+                },
+                {
+                  _ref: "historyState"
+                }
+              ],
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+
+        const count = result[0]?.count || 0;
+        const states = [];
+
+        // Get current history state index
+        const currentResult = await batchPlay(
+          [
+            {
+              _obj: "get",
+              _target: [
+                {
+                  _property: "currentHistoryState"
+                },
+                {
+                  _ref: "document",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+                }
+              ],
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+
+        const currentIndex = currentResult[0]?.currentHistoryState?._index || 0;
+
+        // Get state names (limit to last 20 for performance)
+        const startIndex = Math.max(1, count - 19);
+        for (let i = startIndex; i <= count; i++) {
+          try {
+            const stateResult = await batchPlay(
+              [
+                {
+                  _obj: "get",
+                  _target: [
+                    {
+                      _property: "name"
+                    },
+                    {
+                      _ref: "historyState",
+                      _index: i
+                    }
+                  ],
+                  _options: { dialogOptions: "dontDisplay" }
+                }
+              ],
+              { synchronousExecution: true }
+            );
+            states.push({
+              index: i,
+              name: stateResult[0]?.name || `State ${i}`,
+              isCurrent: i === currentIndex
+            });
+          } catch (e) {
+            // Skip states that can't be read
+          }
+        }
+
+        historyInfo = {
+          totalCount: count,
+          currentIndex,
+          states
+        };
+      },
+      { commandName: "Get History States" }
+    );
+
+    return { ok: true, changed: false, data: historyInfo };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to get history states: ${error.message}` };
+  }
+};
+
 // WebSocket connection state
 let ws = null;
 let autoReconnect = true;
