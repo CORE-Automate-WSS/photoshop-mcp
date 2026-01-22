@@ -651,6 +651,653 @@ commands["selection.get_bounds"] = async function () {
   }
 };
 
+// ============================================
+// Select Subject (batchPlay - AI Selection)
+// ============================================
+
+commands["selection.select_subject"] = async function (params) {
+  const { sampleAllLayers = false } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "autoCutout",
+              sampleAllLayers: sampleAllLayers,
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+      },
+      { commandName: "Select Subject" }
+    );
+
+    return { ok: true, changed: true, data: { selection: "subject" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to select subject: ${error.message}` };
+  }
+};
+
+// ============================================
+// Adjustment Layers (batchPlay)
+// ============================================
+
+commands["adjust.curves"] = async function (params) {
+  const { name, points, channel = "composite" } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    // Build curve points array
+    const curvePoints = points && points.length > 0
+      ? points.map(p => ({ _obj: "paint", horizontal: p.input, vertical: p.output }))
+      : [
+          { _obj: "paint", horizontal: 0, vertical: 0 },
+          { _obj: "paint", horizontal: 255, vertical: 255 }
+        ];
+
+    let layerId;
+    await executeAsModal(
+      async () => {
+        const result = await batchPlay(
+          [
+            {
+              _obj: "make",
+              _target: [{ _ref: "adjustmentLayer" }],
+              using: {
+                _obj: "adjustmentLayer",
+                name: name || "Curves",
+                type: {
+                  _obj: "curves",
+                  presetKind: { _enum: "presetKindType", _value: "presetKindCustom" },
+                  adjustment: [
+                    {
+                      _obj: "curvesAdjustment",
+                      channel: { _ref: "channel", _enum: "channel", _value: channel },
+                      curve: curvePoints
+                    }
+                  ]
+                }
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+        layerId = app.activeDocument.activeLayers[0]?.id;
+      },
+      { commandName: "Create Curves Layer" }
+    );
+
+    return { ok: true, changed: true, data: { layerId, name: name || "Curves" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create curves layer: ${error.message}` };
+  }
+};
+
+commands["adjust.levels"] = async function (params) {
+  const { name, inputBlack = 0, inputWhite = 255, gamma = 1.0, outputBlack = 0, outputWhite = 255 } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    let layerId;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "make",
+              _target: [{ _ref: "adjustmentLayer" }],
+              using: {
+                _obj: "adjustmentLayer",
+                name: name || "Levels",
+                type: {
+                  _obj: "levels",
+                  presetKind: { _enum: "presetKindType", _value: "presetKindCustom" },
+                  adjustment: [
+                    {
+                      _obj: "levelsAdjustment",
+                      channel: { _ref: "channel", _enum: "channel", _value: "composite" },
+                      input: [inputBlack, inputWhite],
+                      gamma: gamma,
+                      output: [outputBlack, outputWhite]
+                    }
+                  ]
+                }
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+        layerId = app.activeDocument.activeLayers[0]?.id;
+      },
+      { commandName: "Create Levels Layer" }
+    );
+
+    return { ok: true, changed: true, data: { layerId, name: name || "Levels" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create levels layer: ${error.message}` };
+  }
+};
+
+commands["adjust.hue_saturation"] = async function (params) {
+  const { name, hue = 0, saturation = 0, lightness = 0, colorize = false } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    let layerId;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "make",
+              _target: [{ _ref: "adjustmentLayer" }],
+              using: {
+                _obj: "adjustmentLayer",
+                name: name || "Hue/Saturation",
+                type: {
+                  _obj: "hueSaturation",
+                  presetKind: { _enum: "presetKindType", _value: "presetKindCustom" },
+                  colorize: colorize,
+                  adjustment: [
+                    {
+                      _obj: "hueSatAdjustmentV2",
+                      hue: hue,
+                      saturation: saturation,
+                      lightness: lightness
+                    }
+                  ]
+                }
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+        layerId = app.activeDocument.activeLayers[0]?.id;
+      },
+      { commandName: "Create Hue/Saturation Layer" }
+    );
+
+    return { ok: true, changed: true, data: { layerId, name: name || "Hue/Saturation" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create hue/saturation layer: ${error.message}` };
+  }
+};
+
+commands["adjust.brightness_contrast"] = async function (params) {
+  const { name, brightness = 0, contrast = 0, useLegacy = false } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    let layerId;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "make",
+              _target: [{ _ref: "adjustmentLayer" }],
+              using: {
+                _obj: "adjustmentLayer",
+                name: name || "Brightness/Contrast",
+                type: {
+                  _obj: "brightnessEvent",
+                  brightness: brightness,
+                  contrast: contrast,
+                  useLegacy: useLegacy
+                }
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+        layerId = app.activeDocument.activeLayers[0]?.id;
+      },
+      { commandName: "Create Brightness/Contrast Layer" }
+    );
+
+    return { ok: true, changed: true, data: { layerId, name: name || "Brightness/Contrast" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create brightness/contrast layer: ${error.message}` };
+  }
+};
+
+commands["adjust.vibrance"] = async function (params) {
+  const { name, vibrance = 0, saturation = 0 } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    let layerId;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "make",
+              _target: [{ _ref: "adjustmentLayer" }],
+              using: {
+                _obj: "adjustmentLayer",
+                name: name || "Vibrance",
+                type: {
+                  _obj: "vibrance",
+                  vibrance: vibrance,
+                  saturation: saturation
+                }
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+        layerId = app.activeDocument.activeLayers[0]?.id;
+      },
+      { commandName: "Create Vibrance Layer" }
+    );
+
+    return { ok: true, changed: true, data: { layerId, name: name || "Vibrance" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create vibrance layer: ${error.message}` };
+  }
+};
+
+commands["adjust.color_balance"] = async function (params) {
+  const { name, shadows = [0,0,0], midtones = [0,0,0], highlights = [0,0,0], preserveLuminosity = true } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    let layerId;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "make",
+              _target: [{ _ref: "adjustmentLayer" }],
+              using: {
+                _obj: "adjustmentLayer",
+                name: name || "Color Balance",
+                type: {
+                  _obj: "colorBalance",
+                  shadowLevels: shadows,
+                  midtoneLevels: midtones,
+                  highlightLevels: highlights,
+                  preserveLuminosity: preserveLuminosity
+                }
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+        layerId = app.activeDocument.activeLayers[0]?.id;
+      },
+      { commandName: "Create Color Balance Layer" }
+    );
+
+    return { ok: true, changed: true, data: { layerId, name: name || "Color Balance" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create color balance layer: ${error.message}` };
+  }
+};
+
+commands["adjust.black_white"] = async function (params) {
+  const { name, red = 40, yellow = 60, green = 40, cyan = 60, blue = 20, magenta = 80 } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    let layerId;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "make",
+              _target: [{ _ref: "adjustmentLayer" }],
+              using: {
+                _obj: "adjustmentLayer",
+                name: name || "Black & White",
+                type: {
+                  _obj: "blackAndWhite",
+                  presetKind: { _enum: "presetKindType", _value: "presetKindCustom" },
+                  red: red,
+                  yellow: yellow,
+                  grain: green, // Note: Photoshop uses "grain" for green
+                  cyan: cyan,
+                  blue: blue,
+                  magenta: magenta,
+                  useTint: false
+                }
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+        layerId = app.activeDocument.activeLayers[0]?.id;
+      },
+      { commandName: "Create Black & White Layer" }
+    );
+
+    return { ok: true, changed: true, data: { layerId, name: name || "Black & White" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create black & white layer: ${error.message}` };
+  }
+};
+
+commands["adjust.exposure"] = async function (params) {
+  const { name, exposure = 0, offset = 0, gamma = 1.0 } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    let layerId;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "make",
+              _target: [{ _ref: "adjustmentLayer" }],
+              using: {
+                _obj: "adjustmentLayer",
+                name: name || "Exposure",
+                type: {
+                  _obj: "exposure",
+                  presetKind: { _enum: "presetKindType", _value: "presetKindCustom" },
+                  exposure: exposure,
+                  offset: offset,
+                  gammaCorrection: gamma
+                }
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+        layerId = app.activeDocument.activeLayers[0]?.id;
+      },
+      { commandName: "Create Exposure Layer" }
+    );
+
+    return { ok: true, changed: true, data: { layerId, name: name || "Exposure" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create exposure layer: ${error.message}` };
+  }
+};
+
+commands["adjust.invert"] = async function (params) {
+  const { name } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    let layerId;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "make",
+              _target: [{ _ref: "adjustmentLayer" }],
+              using: {
+                _obj: "adjustmentLayer",
+                name: name || "Invert",
+                type: { _class: "invert" }
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+        layerId = app.activeDocument.activeLayers[0]?.id;
+      },
+      { commandName: "Create Invert Layer" }
+    );
+
+    return { ok: true, changed: true, data: { layerId, name: name || "Invert" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create invert layer: ${error.message}` };
+  }
+};
+
+commands["adjust.posterize"] = async function (params) {
+  const { name, levels = 4 } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    let layerId;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "make",
+              _target: [{ _ref: "adjustmentLayer" }],
+              using: {
+                _obj: "adjustmentLayer",
+                name: name || "Posterize",
+                type: {
+                  _obj: "posterization",
+                  levels: levels
+                }
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+        layerId = app.activeDocument.activeLayers[0]?.id;
+      },
+      { commandName: "Create Posterize Layer" }
+    );
+
+    return { ok: true, changed: true, data: { layerId, name: name || "Posterize" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create posterize layer: ${error.message}` };
+  }
+};
+
+commands["adjust.threshold"] = async function (params) {
+  const { name, level = 128 } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    let layerId;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "make",
+              _target: [{ _ref: "adjustmentLayer" }],
+              using: {
+                _obj: "adjustmentLayer",
+                name: name || "Threshold",
+                type: {
+                  _obj: "thresholdClassEvent",
+                  level: level
+                }
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+        layerId = app.activeDocument.activeLayers[0]?.id;
+      },
+      { commandName: "Create Threshold Layer" }
+    );
+
+    return { ok: true, changed: true, data: { layerId, name: name || "Threshold" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create threshold layer: ${error.message}` };
+  }
+};
+
+commands["adjust.photo_filter"] = async function (params) {
+  const { name, color = { red: 236, green: 138, blue: 0 }, density = 25, preserveLuminosity = true } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    let layerId;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "make",
+              _target: [{ _ref: "adjustmentLayer" }],
+              using: {
+                _obj: "adjustmentLayer",
+                name: name || "Photo Filter",
+                type: {
+                  _obj: "photoFilter",
+                  color: {
+                    _obj: "RGBColor",
+                    red: color.red,
+                    grain: color.green, // Note: Photoshop uses "grain" for green
+                    blue: color.blue
+                  },
+                  density: density,
+                  preserveLuminosity: preserveLuminosity
+                }
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+        layerId = app.activeDocument.activeLayers[0]?.id;
+      },
+      { commandName: "Create Photo Filter Layer" }
+    );
+
+    return { ok: true, changed: true, data: { layerId, name: name || "Photo Filter" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create photo filter layer: ${error.message}` };
+  }
+};
+
+commands["fill.solid_color"] = async function (params) {
+  const { name, color } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+  if (!color) {
+    return { ok: false, changed: false, error: "color is required" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    let layerId;
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "make",
+              _target: [{ _ref: "contentLayer" }],
+              using: {
+                _obj: "contentLayer",
+                name: name || "Color Fill",
+                type: {
+                  _obj: "solidColorLayer",
+                  color: {
+                    _obj: "RGBColor",
+                    red: color.red,
+                    grain: color.green,
+                    blue: color.blue
+                  }
+                }
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+        layerId = app.activeDocument.activeLayers[0]?.id;
+      },
+      { commandName: "Create Solid Color Layer" }
+    );
+
+    return { ok: true, changed: true, data: { layerId, name: name || "Color Fill", color } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create solid color layer: ${error.message}` };
+  }
+};
+
 // WebSocket connection state
 let ws = null;
 let autoReconnect = true;

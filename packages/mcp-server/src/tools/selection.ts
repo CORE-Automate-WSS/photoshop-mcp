@@ -13,6 +13,29 @@ import type {
 
 export const selectionTools: ToolDefinition[] = [
   {
+    name: "ps_select_subject",
+    description: "Automatically select the main subject in the image using AI (Select Subject)",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sampleAllLayers: {
+          type: "boolean",
+          description: "Sample all layers instead of just the active layer (default: false)",
+        },
+      },
+    },
+    handler: async (
+      bridge: PhotoshopBridge,
+      args: Record<string, unknown>
+    ): Promise<ToolResponse> => {
+      return bridge.send("selection.select_subject", {
+        sampleAllLayers: args.sampleAllLayers ?? false,
+      });
+    },
+  },
+
+
+  {
     name: "ps_select_all",
     description: "Select the entire canvas",
     inputSchema: {
