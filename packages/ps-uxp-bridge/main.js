@@ -262,6 +262,395 @@ commands["layer.set_opacity"] = async function (params) {
   }
 };
 
+// ============================================
+// Layer Creation Commands (DOM API)
+// ============================================
+
+commands["layer.create"] = async function (params) {
+  const { name, opacity, blendMode } = params;
+  const doc = app.activeDocument;
+
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    let newLayer;
+    await executeAsModal(
+      async () => {
+        const options = {};
+        if (name) options.name = name;
+        if (opacity !== undefined) options.opacity = opacity;
+        if (blendMode) options.blendMode = blendMode;
+
+        newLayer = await doc.createLayer(options);
+      },
+      { commandName: "Create Layer" }
+    );
+
+    return {
+      ok: true,
+      changed: true,
+      data: {
+        layerId: newLayer.id,
+        name: newLayer.name,
+        opacity: newLayer.opacity,
+        blendMode: newLayer.blendMode,
+      },
+    };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create layer: ${error.message}` };
+  }
+};
+
+commands["layer.duplicate"] = async function (params) {
+  const { layerId, name } = params;
+  const doc = app.activeDocument;
+
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+  if (layerId === undefined) {
+    return { ok: false, changed: false, error: "layerId is required" };
+  }
+
+  try {
+    // Find the layer by ID
+    const findLayer = (layers, id) => {
+      for (const layer of layers) {
+        if (layer.id === id) return layer;
+        if (layer.layers) {
+          const found = findLayer(layer.layers, id);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    const sourceLayer = findLayer(doc.layers, layerId);
+    if (!sourceLayer) {
+      return { ok: false, changed: false, error: `Layer with ID ${layerId} not found` };
+    }
+
+    let duplicatedLayer;
+    await executeAsModal(
+      async () => {
+        duplicatedLayer = await sourceLayer.duplicate();
+        if (name) {
+          duplicatedLayer.name = name;
+        }
+      },
+      { commandName: "Duplicate Layer" }
+    );
+
+    return {
+      ok: true,
+      changed: true,
+      data: {
+        layerId: duplicatedLayer.id,
+        name: duplicatedLayer.name,
+        sourceLayerId: layerId,
+      },
+    };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to duplicate layer: ${error.message}` };
+  }
+};
+
+commands["layer.delete"] = async function (params) {
+  const { layerId } = params;
+  const doc = app.activeDocument;
+
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+  if (layerId === undefined) {
+    return { ok: false, changed: false, error: "layerId is required" };
+  }
+
+  try {
+    const findLayer = (layers, id) => {
+      for (const layer of layers) {
+        if (layer.id === id) return layer;
+        if (layer.layers) {
+          const found = findLayer(layer.layers, id);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    const layer = findLayer(doc.layers, layerId);
+    if (!layer) {
+      return { ok: false, changed: false, error: `Layer with ID ${layerId} not found` };
+    }
+
+    const layerName = layer.name;
+    await executeAsModal(
+      async () => {
+        await layer.delete();
+      },
+      { commandName: "Delete Layer" }
+    );
+
+    return {
+      ok: true,
+      changed: true,
+      data: { deletedLayerId: layerId, deletedLayerName: layerName },
+    };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to delete layer: ${error.message}` };
+  }
+};
+
+commands["layer.group_create"] = async function (params) {
+  const { name } = params;
+  const doc = app.activeDocument;
+
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    let newGroup;
+    await executeAsModal(
+      async () => {
+        newGroup = await doc.createLayerGroup({ name: name || "New Group" });
+      },
+      { commandName: "Create Layer Group" }
+    );
+
+    return {
+      ok: true,
+      changed: true,
+      data: {
+        groupId: newGroup.id,
+        name: newGroup.name,
+      },
+    };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to create group: ${error.message}` };
+  }
+};
+
+// ============================================
+// Selection Commands (DOM API)
+// ============================================
+
+commands["selection.select_all"] = async function () {
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    await executeAsModal(
+      async () => {
+        await doc.selection.selectAll();
+      },
+      { commandName: "Select All" }
+    );
+    return { ok: true, changed: true, data: { selection: "all" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to select all: ${error.message}` };
+  }
+};
+
+commands["selection.deselect"] = async function () {
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    await executeAsModal(
+      async () => {
+        await doc.selection.deselect();
+      },
+      { commandName: "Deselect" }
+    );
+    return { ok: true, changed: true, data: { selection: "none" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to deselect: ${error.message}` };
+  }
+};
+
+commands["selection.inverse"] = async function () {
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    await executeAsModal(
+      async () => {
+        await doc.selection.inverse();
+      },
+      { commandName: "Inverse Selection" }
+    );
+    return { ok: true, changed: true, data: { selection: "inversed" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to inverse selection: ${error.message}` };
+  }
+};
+
+commands["selection.select_rectangle"] = async function (params) {
+  const { top, left, bottom, right, feather = 0 } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    await executeAsModal(
+      async () => {
+        await doc.selection.selectRectangle(
+          { top, left, bottom, right },
+          feather > 0 ? { featherRadius: feather } : undefined
+        );
+      },
+      { commandName: "Select Rectangle" }
+    );
+    return { ok: true, changed: true, data: { bounds: { top, left, bottom, right }, feather } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to select rectangle: ${error.message}` };
+  }
+};
+
+commands["selection.select_ellipse"] = async function (params) {
+  const { top, left, bottom, right, feather = 0 } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    await executeAsModal(
+      async () => {
+        await doc.selection.selectEllipse(
+          { top, left, bottom, right },
+          feather > 0 ? { featherRadius: feather } : undefined
+        );
+      },
+      { commandName: "Select Ellipse" }
+    );
+    return { ok: true, changed: true, data: { bounds: { top, left, bottom, right }, feather } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to select ellipse: ${error.message}` };
+  }
+};
+
+commands["selection.expand"] = async function (params) {
+  const { pixels } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    await executeAsModal(
+      async () => {
+        await doc.selection.expand(pixels);
+      },
+      { commandName: "Expand Selection" }
+    );
+    return { ok: true, changed: true, data: { expanded: pixels } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to expand selection: ${error.message}` };
+  }
+};
+
+commands["selection.contract"] = async function (params) {
+  const { pixels } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    await executeAsModal(
+      async () => {
+        await doc.selection.contract(pixels);
+      },
+      { commandName: "Contract Selection" }
+    );
+    return { ok: true, changed: true, data: { contracted: pixels } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to contract selection: ${error.message}` };
+  }
+};
+
+commands["selection.feather"] = async function (params) {
+  const { radius } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    await executeAsModal(
+      async () => {
+        await doc.selection.feather(radius);
+      },
+      { commandName: "Feather Selection" }
+    );
+    return { ok: true, changed: true, data: { featherRadius: radius } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to feather selection: ${error.message}` };
+  }
+};
+
+commands["selection.grow"] = async function (params) {
+  const { tolerance } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    await executeAsModal(
+      async () => {
+        await doc.selection.grow(tolerance);
+      },
+      { commandName: "Grow Selection" }
+    );
+    return { ok: true, changed: true, data: { tolerance } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to grow selection: ${error.message}` };
+  }
+};
+
+commands["selection.get_bounds"] = async function () {
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const bounds = doc.selection.bounds;
+    if (!bounds) {
+      return { ok: true, changed: false, data: { hasSelection: false, bounds: null } };
+    }
+    return {
+      ok: true,
+      changed: false,
+      data: {
+        hasSelection: true,
+        bounds: {
+          top: bounds.top,
+          left: bounds.left,
+          bottom: bounds.bottom,
+          right: bounds.right,
+          width: bounds.right - bounds.left,
+          height: bounds.bottom - bounds.top,
+        },
+      },
+    };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to get selection bounds: ${error.message}` };
+  }
+};
+
 // WebSocket connection state
 let ws = null;
 let autoReconnect = true;

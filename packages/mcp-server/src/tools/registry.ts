@@ -9,6 +9,7 @@ import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { appTools } from "./app.js";
 import { documentTools } from "./document.js";
 import { layerTools } from "./layer.js";
+import { selectionTools } from "./selection.js";
 
 export interface ToolResponse {
   ok: boolean;
@@ -53,7 +54,7 @@ export function createToolRegistry(bridge: PhotoshopBridge): ToolRegistry {
   const tools = new Map<string, ToolDefinition>();
 
   // Register all tool modules
-  const allTools = [...appTools, ...documentTools, ...layerTools];
+  const allTools = [...appTools, ...documentTools, ...layerTools, ...selectionTools];
 
   for (const tool of allTools) {
     tools.set(tool.name, tool);

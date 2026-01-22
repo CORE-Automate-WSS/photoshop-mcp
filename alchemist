@@ -1,0 +1,4070 @@
+// Events recognized as notifiers are not re-playable in most of the cases. There is high chance that generated code won't work.
+
+const {executeAsModal} = require("photoshop").core;
+const {batchPlay} = require("photoshop").action;
+
+async function actionCommands() {
+   const result = await batchPlay(
+      [
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 221,
+            name: "Modify Black  White Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 222,
+            name: "Modify Black  White Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "blackAndWhite",
+               presetKind: {
+                  _enum: "presetKindType",
+                  _value: "presetKindCustom"
+               },
+               red: 81,
+               yellow: 88
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 223,
+            name: "Modify Black  White Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 224,
+            name: "Modify Black  White Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 225,
+            name: "Modify Black  White Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "blackAndWhite",
+               presetKind: {
+                  _enum: "presetKindType",
+                  _value: "presetKindCustom"
+               },
+               red: 81,
+               yellow: 88,
+               grain: 91
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "blackAndWhite",
+               presetKind: {
+                  _enum: "presetKindType",
+                  _value: "presetKindCustom"
+               },
+               red: 81,
+               yellow: 88,
+               grain: 91
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 226,
+            name: "New Photo Filter Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "photoFilter",
+                  color: {
+                     _obj: "labColor",
+                     luminance: 67.06,
+                     a: 32,
+                     b: 120
+                  },
+                  density: 25,
+                  preserveLuminosity: true
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "photoFilter",
+                  color: {
+                     _obj: "labColor",
+                     luminance: 67.06,
+                     a: 32,
+                     b: 120
+                  },
+                  density: 25,
+                  preserveLuminosity: true
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 227,
+            name: "Modify Photo Filter Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "photoFilter",
+               color: {
+                  _obj: "HSBColorClass",
+                  hue: {
+                     _unit: "angleUnit",
+                     _value: 119.9981689453125
+                  },
+                  saturation: 87.45098039215686,
+                  brightness: 78.82352941176471
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "photoFilter",
+               color: {
+                  _obj: "HSBColorClass",
+                  hue: {
+                     _unit: "angleUnit",
+                     _value: 119.9981689453125
+                  },
+                  saturation: 87.45098039215686,
+                  brightness: 78.82352941176471
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "hostFocusChanged",
+            active: false,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "hostFocusChanged",
+            active: true,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 228,
+            name: "New Channel Mixer Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "channelMixer",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  },
+                  red: {
+                     _obj: "channelMatrix",
+                     red: {
+                        _unit: "percentUnit",
+                        _value: 100
+                     }
+                  },
+                  grain: {
+                     _obj: "channelMatrix",
+                     grain: {
+                        _unit: "percentUnit",
+                        _value: 100
+                     }
+                  },
+                  blue: {
+                     _obj: "channelMatrix",
+                     blue: {
+                        _unit: "percentUnit",
+                        _value: 100
+                     }
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "channelMixer",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  },
+                  red: {
+                     _obj: "channelMatrix",
+                     red: {
+                        _unit: "percentUnit",
+                        _value: 100
+                     }
+                  },
+                  grain: {
+                     _obj: "channelMatrix",
+                     grain: {
+                        _unit: "percentUnit",
+                        _value: 100
+                     }
+                  },
+                  blue: {
+                     _obj: "channelMatrix",
+                     blue: {
+                        _unit: "percentUnit",
+                        _value: 100
+                     }
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 229,
+            name: "Modify Channel Mixer Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "channelMixer",
+               presetKind: {
+                  _enum: "presetKindType",
+                  _value: "presetKindCustom"
+               },
+               red: {
+                  _obj: "channelMatrix",
+                  grain: {
+                     _unit: "percentUnit",
+                     _value: 19
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 230,
+            name: "Modify Channel Mixer Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "channelMixer",
+               presetKind: {
+                  _enum: "presetKindType",
+                  _value: "presetKindCustom"
+               },
+               red: {
+                  _obj: "channelMatrix",
+                  grain: {
+                     _unit: "percentUnit",
+                     _value: 19
+                  },
+                  blue: {
+                     _unit: "percentUnit",
+                     _value: 34
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "channelMixer",
+               presetKind: {
+                  _enum: "presetKindType",
+                  _value: "presetKindCustom"
+               },
+               red: {
+                  _obj: "channelMatrix",
+                  grain: {
+                     _unit: "percentUnit",
+                     _value: 19
+                  },
+                  blue: {
+                     _unit: "percentUnit",
+                     _value: 34
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 231,
+            name: "New Color Lookup Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _class: "colorLookup"
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _class: "colorLookup"
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 232,
+            name: "Modify Color Lookup Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "colorLookup",
+               lookupType: {
+                  _enum: "colorLookupType",
+                  _value: "3DLUT"
+               },
+               name: "C:\\Program Files\\Adobe\\Adobe Photoshop 2026\\Presets\\3DLUTs\\Bleach Bypass.look",
+               profile: {},
+               LUTFormat: {
+                  _enum: "LUTFormatType",
+                  _value: "LUTFormatLOOK"
+               },
+               LUT3DFileData: {},
+               LUT3DFileName: "C:\\Program Files\\Adobe\\Adobe Photoshop 2026\\Presets\\3DLUTs\\Bleach Bypass.look"
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "colorLookup",
+               lookupType: {
+                  _enum: "colorLookupType",
+                  _value: "3DLUT"
+               },
+               name: "C:\\Program Files\\Adobe\\Adobe Photoshop 2026\\Presets\\3DLUTs\\Bleach Bypass.look",
+               profile: {},
+               LUTFormat: {
+                  _enum: "LUTFormatType",
+                  _value: "LUTFormatLOOK"
+               },
+               LUT3DFileData: {},
+               LUT3DFileName: "C:\\Program Files\\Adobe\\Adobe Photoshop 2026\\Presets\\3DLUTs\\Bleach Bypass.look"
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 233,
+            name: "New Selective Color Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "selectiveColor",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "selectiveColor",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 234,
+            name: "Modify Selective Color Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "selectiveColor",
+               presetKind: {
+                  _enum: "presetKindType",
+                  _value: "presetKindCustom"
+               },
+               colorCorrection: [
+                  {
+                     _obj: "colorCorrection",
+                     colors: {
+                        _enum: "colors",
+                        _value: "radius"
+                     },
+                     magenta: {
+                        _unit: "percentUnit",
+                        _value: 11
+                     }
+                  }
+               ]
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "selectiveColor",
+               presetKind: {
+                  _enum: "presetKindType",
+                  _value: "presetKindCustom"
+               },
+               colorCorrection: [
+                  {
+                     _obj: "colorCorrection",
+                     colors: {
+                        _enum: "colors",
+                        _value: "radius"
+                     },
+                     magenta: {
+                        _unit: "percentUnit",
+                        _value: 11
+                     }
+                  }
+               ]
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 235,
+            name: "New Invert Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _class: "invert"
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _class: "invert"
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 236,
+            name: "New Posterize Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "posterization",
+                  levels: 4
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "posterization",
+                  levels: 4
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 237,
+            name: "New Threshold Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "thresholdClassEvent",
+                  level: 128
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "thresholdClassEvent",
+                  level: 128
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 238,
+            name: "New Gradient Map Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "gradientMapClass",
+                  gradientsInterpolationMethod: {
+                     _enum: "gradientInterpolationMethodType",
+                     _value: "smooth"
+                  },
+                  gradient: {
+                     _obj: "gradientClassEvent",
+                     name: "Foreground to Background",
+                     gradientForm: {
+                        _enum: "gradientForm",
+                        _value: "customStops"
+                     },
+                     interfaceIconFrameDimmed: 4096,
+                     colors: [
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 0,
+                              grain: 0,
+                              blue: 0
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 255,
+                              grain: 255,
+                              blue: 255
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ],
+                     transparency: [
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 100
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 100
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ]
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "gradientMapClass",
+                  gradientsInterpolationMethod: {
+                     _enum: "gradientInterpolationMethodType",
+                     _value: "smooth"
+                  },
+                  gradient: {
+                     _obj: "gradientClassEvent",
+                     name: "Foreground to Background",
+                     gradientForm: {
+                        _enum: "gradientForm",
+                        _value: "customStops"
+                     },
+                     interfaceIconFrameDimmed: 4096,
+                     colors: [
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 0,
+                              grain: 0,
+                              blue: 0
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 255,
+                              grain: 255,
+                              blue: 255
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ],
+                     transparency: [
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 100
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 100
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ]
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 1,
+            state: {
+               _enum: "state",
+               _value: "enter"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Gradient Editor",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "gradientClassEvent",
+                  _name: "Purple_01"
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "gradientClassEvent",
+                  _name: "Purple_01"
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 239,
+            name: "Modify Gradient Map Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 2,
+            state: {
+               _enum: "state",
+               _value: "enter"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Color Picker",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 240,
+            name: "Modify Gradient Map Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 241,
+            name: "Modify Gradient Map Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 1,
+            state: {
+               _enum: "state",
+               _value: "exit"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Color Picker",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 0,
+            state: {
+               _enum: "state",
+               _value: "exit"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Gradient Editor",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 242,
+            name: "Modify Gradient Map Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 1,
+            state: {
+               _enum: "state",
+               _value: "enter"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Color Picker",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 0,
+            state: {
+               _enum: "state",
+               _value: "exit"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Color Picker",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "gradientMapClass",
+               gradient: {
+                  _obj: "gradientClassEvent",
+                  name: "Custom",
+                  gradientForm: {
+                     _enum: "gradientForm",
+                     _value: "customStops"
+                  },
+                  interfaceIconFrameDimmed: 4096,
+                  colors: [
+                     {
+                        _obj: "colorStop",
+                        color: {
+                           _obj: "RGBColor",
+                           red: 127.99999237060547,
+                           grain: 26.6070044785738,
+                           blue: 99.04280260205269
+                        },
+                        type: {
+                           _enum: "colorStopType",
+                           _value: "userStop"
+                        },
+                        location: 0,
+                        midpoint: 50
+                     },
+                     {
+                        _obj: "colorStop",
+                        color: {
+                           _obj: "RGBColor",
+                           red: 199.99611228704453,
+                           grain: 114.0000008046627,
+                           blue: 241.99610978364944
+                        },
+                        type: {
+                           _enum: "colorStopType",
+                           _value: "userStop"
+                        },
+                        location: 4096,
+                        midpoint: 50
+                     }
+                  ],
+                  transparency: [
+                     {
+                        _obj: "transferSpec",
+                        opacity: {
+                           _unit: "percentUnit",
+                           _value: 100
+                        },
+                        location: 0,
+                        midpoint: 50
+                     },
+                     {
+                        _obj: "transferSpec",
+                        opacity: {
+                           _unit: "percentUnit",
+                           _value: 100
+                        },
+                        location: 4096,
+                        midpoint: 50
+                     }
+                  ]
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "gradientMapClass",
+               gradient: {
+                  _obj: "gradientClassEvent",
+                  name: "Custom",
+                  gradientForm: {
+                     _enum: "gradientForm",
+                     _value: "customStops"
+                  },
+                  interfaceIconFrameDimmed: 4096,
+                  colors: [
+                     {
+                        _obj: "colorStop",
+                        color: {
+                           _obj: "RGBColor",
+                           red: 127.99999237060547,
+                           grain: 26.6070044785738,
+                           blue: 99.04280260205269
+                        },
+                        type: {
+                           _enum: "colorStopType",
+                           _value: "userStop"
+                        },
+                        location: 0,
+                        midpoint: 50
+                     },
+                     {
+                        _obj: "colorStop",
+                        color: {
+                           _obj: "RGBColor",
+                           red: 199.99611228704453,
+                           grain: 114.0000008046627,
+                           blue: 241.99610978364944
+                        },
+                        type: {
+                           _enum: "colorStopType",
+                           _value: "userStop"
+                        },
+                        location: 4096,
+                        midpoint: 50
+                     }
+                  ],
+                  transparency: [
+                     {
+                        _obj: "transferSpec",
+                        opacity: {
+                           _unit: "percentUnit",
+                           _value: 100
+                        },
+                        location: 0,
+                        midpoint: 50
+                     },
+                     {
+                        _obj: "transferSpec",
+                        opacity: {
+                           _unit: "percentUnit",
+                           _value: 100
+                        },
+                        location: 4096,
+                        midpoint: 50
+                     }
+                  ]
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 243,
+            name: "New Color Fill Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "contentLayer"
+               }
+            ],
+            using: {
+               _obj: "contentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "solidColorLayer",
+                  color: {
+                     _obj: "RGBColor",
+                     red: 246.0000005364418,
+                     grain: 0.0038910505827516317,
+                     blue: 0.0038910505827516317
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "contentLayer"
+               }
+            ],
+            using: {
+               _obj: "contentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "solidColorLayer",
+                  color: {
+                     _obj: "RGBColor",
+                     red: 246.0000005364418,
+                     grain: 0.0038910505827516317,
+                     blue: 0.0038910505827516317
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 244,
+            name: "New Group",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 2976,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "layerSection"
+               }
+            ],
+            using: {
+               _obj: "layerSection",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               }
+            },
+            layerSectionStart: 61,
+            layerSectionEnd: 62,
+            name: "Group 1",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "layerSection"
+               }
+            ],
+            using: {
+               _obj: "layerSection",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               }
+            },
+            layerSectionStart: 61,
+            layerSectionEnd: 62,
+            name: "Group 1",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 1,
+            state: {
+               _enum: "state",
+               _value: "enter"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Gradient Fill",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 0,
+            state: {
+               _enum: "state",
+               _value: "exit"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Gradient Fill",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 245,
+            name: "New Gradient Fill Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 5033,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "contentLayer"
+               }
+            ],
+            using: {
+               _obj: "contentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "gradientLayer",
+                  gradientsInterpolationMethod: {
+                     _enum: "gradientInterpolationMethodType",
+                     _value: "smooth"
+                  },
+                  angle: {
+                     _unit: "angleUnit",
+                     _value: 90
+                  },
+                  type: {
+                     _enum: "gradientType",
+                     _value: "linear"
+                  },
+                  noisePreSeed: 29416,
+                  gradient: {
+                     _obj: "gradientClassEvent",
+                     name: "Color to Transparent",
+                     gradientForm: {
+                        _enum: "gradientForm",
+                        _value: "customStops"
+                     },
+                     interfaceIconFrameDimmed: 4096,
+                     colors: [
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 246.0000005364418,
+                              grain: 0.0038910505827516317,
+                              blue: 0.0038910505827516317
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 246.0000005364418,
+                              grain: 0.0038910505827516317,
+                              blue: 0.0038910505827516317
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ],
+                     transparency: [
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 100
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 0
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ]
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "contentLayer"
+               }
+            ],
+            using: {
+               _obj: "contentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "gradientLayer",
+                  gradientsInterpolationMethod: {
+                     _enum: "gradientInterpolationMethodType",
+                     _value: "smooth"
+                  },
+                  angle: {
+                     _unit: "angleUnit",
+                     _value: 90
+                  },
+                  type: {
+                     _enum: "gradientType",
+                     _value: "linear"
+                  },
+                  noisePreSeed: 29416,
+                  gradient: {
+                     _obj: "gradientClassEvent",
+                     name: "Color to Transparent",
+                     gradientForm: {
+                        _enum: "gradientForm",
+                        _value: "customStops"
+                     },
+                     interfaceIconFrameDimmed: 4096,
+                     colors: [
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 246.0000005364418,
+                              grain: 0.0038910505827516317,
+                              blue: 0.0038910505827516317
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 246.0000005364418,
+                              grain: 0.0038910505827516317,
+                              blue: 0.0038910505827516317
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ],
+                     transparency: [
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 100
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 0
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ]
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 1,
+            state: {
+               _enum: "state",
+               _value: "enter"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Pattern Fill",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 0,
+            state: {
+               _enum: "state",
+               _value: "exit"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Pattern Fill",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 246,
+            name: "New Pattern Fill Layer",
+            hasEnglish: true,
+            itemIndex: 50,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "contentLayer"
+               }
+            ],
+            using: {
+               _obj: "contentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "patternLayer",
+                  pattern: {
+                     _obj: "pattern",
+                     name: "Tree Tile 4",
+                     ID: "92150a0d-bc3e-9349-adc8-869fb042a4b0"
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "contentLayer"
+               }
+            ],
+            using: {
+               _obj: "contentLayer",
+               color: {
+                  _enum: "color",
+                  _value: "magenta"
+               },
+               type: {
+                  _obj: "patternLayer",
+                  pattern: {
+                     _obj: "pattern",
+                     name: "Tree Tile 4",
+                     ID: "92150a0d-bc3e-9349-adc8-869fb042a4b0"
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "historyState",
+                  _offset: -19
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "historyState",
+                  _offset: -19
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 215,
+            name: "Modify Color Balance Layer",
+            hasEnglish: true,
+            itemIndex: 31,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "snapshotClass",
+                  _name: "107jarappl48_v1.tif"
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "snapshotClass",
+                  _name: "107jarappl48_v1.tif"
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 64,
+            name: "107jarappl48_v1.tif",
+            hasEnglish: false,
+            itemIndex: 0,
+            commandID: 0,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "moveTool"
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "marqueeRectTool"
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "lassoTool"
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "magicLassoTool"
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "cropTool"
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "framedGroupTool"
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "eyedropperTool"
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "spotHealingBrushTool"
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "spotHealingBrushTool"
+               }
+            ],
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "uiInfo",
+            view: {
+               class: "TIconButton<int>",
+               toolTip: "Explore starter tutorials in Photoshop",
+               viewID: "$lvhb",
+               signature: "$icnb",
+               globalBounds: {
+                  top: 40,
+                  bottom: 67,
+                  left: 3443,
+                  right: 3469
+               },
+               globalFrameBounds: {
+                  top: 40,
+                  bottom: 67,
+                  left: 3443,
+                  right: 3469
+               },
+               shown: true,
+               visible: true,
+               type: "button",
+               control: {
+                  dimmed: false,
+                  highlighted: false,
+                  enabled: true
+               }
+            },
+            command: "getViewInfo",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "invokeCommand",
+            commandID: 1461,
+            kcanDispatchWhileModal: true,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 1,
+            state: {
+               _enum: "state",
+               _value: "enter"
+            },
+            kcanDispatchWhileModal: true,
+            title: "GARBAGE",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "uiInfo",
+            view: {
+               class: "TIconButton<int>",
+               toolTip: "Explore starter tutorials in Photoshop",
+               viewID: "$lvhb",
+               signature: "$icnb",
+               globalBounds: {
+                  top: 40,
+                  bottom: 67,
+                  left: 3443,
+                  right: 3469
+               },
+               globalFrameBounds: {
+                  top: 40,
+                  bottom: 67,
+                  left: 3443,
+                  right: 3469
+               },
+               shown: true,
+               visible: true,
+               type: "button",
+               control: {
+                  dimmed: true,
+                  highlighted: false,
+                  enabled: false
+               }
+            },
+            command: "getViewInfo",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 0,
+            state: {
+               _enum: "state",
+               _value: "exit"
+            },
+            kcanDispatchWhileModal: true,
+            title: "GARBAGE",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 249,
+            name: "Select Subject",
+            hasEnglish: true,
+            itemIndex: 1,
+            commandID: 1461,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "autoCutout",
+            sampleAllLayers: false,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         }
+      ],
+      {}
+   );
+}
+
+async function runModalFunction() {
+   await executeAsModal(actionCommands, {"commandName": "Action Commands"});
+}
+
+await runModalFunction();
+// Events recognized as notifiers are not re-playable in most of the cases. There is high chance that generated code won't work.
+
+const {executeAsModal} = require("photoshop").core;
+const {batchPlay} = require("photoshop").action;
+
+async function actionCommands() {
+   const result = await batchPlay(
+      [
+         {
+            _obj: "hostFocusChanged",
+            active: false,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "hostFocusChanged",
+            active: true,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 251,
+            name: "New Color and vibrance Layer",
+            hasEnglish: true,
+            itemIndex: 2,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "vibrance",
+                  useLegacy: false
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "vibrance",
+                  useLegacy: false
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 252,
+            name: "Modify Color and vibrance Layer",
+            hasEnglish: true,
+            itemIndex: 3,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "vibrance",
+               whiteBalancePopupIndex: 2,
+               temperature: 0,
+               tint: 17,
+               vibrance: 0,
+               saturation: 0,
+               useLegacy: false
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "vibrance",
+               whiteBalancePopupIndex: 2,
+               temperature: 0,
+               tint: 17,
+               vibrance: 0,
+               saturation: 0,
+               useLegacy: false
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 253,
+            name: "New Levels Layer",
+            hasEnglish: true,
+            itemIndex: 4,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "levels",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "levels",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 254,
+            name: "New Brightness/Contrast Layer",
+            hasEnglish: true,
+            itemIndex: 5,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "brightnessEvent",
+                  useLegacy: false
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "brightnessEvent",
+                  useLegacy: false
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 255,
+            name: "New Curves Layer",
+            hasEnglish: true,
+            itemIndex: 6,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "curves",
+                  transferFunction: 0,
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "curves",
+                  transferFunction: 0,
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 256,
+            name: "Modify Curves Layer",
+            hasEnglish: true,
+            itemIndex: 7,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 257,
+            name: "Modify Curves Layer",
+            hasEnglish: true,
+            itemIndex: 7,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 258,
+            name: "Modify Curves Layer",
+            hasEnglish: true,
+            itemIndex: 7,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 259,
+            name: "Modify Curves Layer",
+            hasEnglish: true,
+            itemIndex: 7,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 260,
+            name: "Modify Curves Layer",
+            hasEnglish: true,
+            itemIndex: 7,
+            commandID: 2977,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "curves",
+               presetKind: {
+                  _enum: "presetKindType",
+                  _value: "presetKindCustom"
+               },
+               adjustment: [
+                  {
+                     _obj: "curvesAdjustment",
+                     channel: {
+                        _ref: "channel",
+                        _enum: "channel",
+                        _value: "composite"
+                     },
+                     curve: [
+                        {
+                           _obj: "paint",
+                           horizontal: 0,
+                           vertical: 0
+                        },
+                        {
+                           _obj: "paint",
+                           horizontal: 93,
+                           vertical: 92
+                        },
+                        {
+                           _obj: "paint",
+                           horizontal: 183,
+                           vertical: 201
+                        },
+                        {
+                           _obj: "paint",
+                           horizontal: 255,
+                           vertical: 255
+                        }
+                     ]
+                  }
+               ]
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "adjustmentLayer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+               }
+            ],
+            to: {
+               _obj: "curves",
+               presetKind: {
+                  _enum: "presetKindType",
+                  _value: "presetKindCustom"
+               },
+               adjustment: [
+                  {
+                     _obj: "curvesAdjustment",
+                     channel: {
+                        _ref: "channel",
+                        _enum: "channel",
+                        _value: "composite"
+                     },
+                     curve: [
+                        {
+                           _obj: "paint",
+                           horizontal: 0,
+                           vertical: 0
+                        },
+                        {
+                           _obj: "paint",
+                           horizontal: 93,
+                           vertical: 92
+                        },
+                        {
+                           _obj: "paint",
+                           horizontal: 183,
+                           vertical: 201
+                        },
+                        {
+                           _obj: "paint",
+                           horizontal: 255,
+                           vertical: 255
+                        }
+                     ]
+                  }
+               ]
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 261,
+            name: "New Exposure Layer",
+            hasEnglish: true,
+            itemIndex: 8,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "exposure",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  },
+                  exposure: 0,
+                  offset: 0,
+                  gammaCorrection: 1
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "exposure",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  },
+                  exposure: 0,
+                  offset: 0,
+                  gammaCorrection: 1
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 262,
+            name: "New Hue/Saturation Layer",
+            hasEnglish: true,
+            itemIndex: 9,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "hueSaturation",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  },
+                  GeneratedPreset: false,
+                  colorize: false
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "hueSaturation",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  },
+                  GeneratedPreset: false,
+                  colorize: false
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 263,
+            name: "New Color Balance Layer",
+            hasEnglish: true,
+            itemIndex: 10,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "colorBalance",
+                  shadowLevels: [
+                     0,
+                     0,
+                     0
+                  ],
+                  midtoneLevels: [
+                     0,
+                     0,
+                     0
+                  ],
+                  highlightLevels: [
+                     0,
+                     0,
+                     0
+                  ],
+                  preserveLuminosity: true
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "colorBalance",
+                  shadowLevels: [
+                     0,
+                     0,
+                     0
+                  ],
+                  midtoneLevels: [
+                     0,
+                     0,
+                     0
+                  ],
+                  highlightLevels: [
+                     0,
+                     0,
+                     0
+                  ],
+                  preserveLuminosity: true
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 264,
+            name: "New Black  White Layer",
+            hasEnglish: true,
+            itemIndex: 11,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "blackAndWhite",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  },
+                  red: 40,
+                  yellow: 60,
+                  grain: 40,
+                  cyan: 60,
+                  blue: 20,
+                  magenta: 80,
+                  useTint: false,
+                  tintColor: {
+                     _obj: "RGBColor",
+                     red: 225.00045776367188,
+                     grain: 211.00067138671875,
+                     blue: 179.00115966796875
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "blackAndWhite",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  },
+                  red: 40,
+                  yellow: 60,
+                  grain: 40,
+                  cyan: 60,
+                  blue: 20,
+                  magenta: 80,
+                  useTint: false,
+                  tintColor: {
+                     _obj: "RGBColor",
+                     red: 225.00045776367188,
+                     grain: 211.00067138671875,
+                     blue: 179.00115966796875
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 265,
+            name: "New Photo Filter Layer",
+            hasEnglish: true,
+            itemIndex: 12,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "photoFilter",
+                  color: {
+                     _obj: "labColor",
+                     luminance: 67.06,
+                     a: 32,
+                     b: 120
+                  },
+                  density: 25,
+                  preserveLuminosity: true
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "photoFilter",
+                  color: {
+                     _obj: "labColor",
+                     luminance: 67.06,
+                     a: 32,
+                     b: 120
+                  },
+                  density: 25,
+                  preserveLuminosity: true
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "uiInfo",
+            view: {
+               class: "TIconButton<int>",
+               toolTip: "Explore starter tutorials in Photoshop",
+               viewID: "$lvhb",
+               signature: "$icnb",
+               globalBounds: {
+                  top: 40,
+                  bottom: 67,
+                  left: 3443,
+                  right: 3469
+               },
+               globalFrameBounds: {
+                  top: 40,
+                  bottom: 67,
+                  left: 3443,
+                  right: 3469
+               },
+               shown: true,
+               visible: true,
+               type: "button",
+               control: {
+                  dimmed: false,
+                  highlighted: false,
+                  enabled: true
+               }
+            },
+            command: "getViewInfo",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "invokeCommand",
+            commandID: 1017,
+            kcanDispatchWhileModal: true,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 266,
+            name: "Select Canvas",
+            hasEnglish: true,
+            itemIndex: 13,
+            commandID: 1017,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "channel",
+                  _property: "selection"
+               }
+            ],
+            to: {
+               _enum: "ordinal",
+               _value: "allEnum"
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "set",
+            _target: [
+               {
+                  _ref: "channel",
+                  _property: "selection"
+               }
+            ],
+            to: {
+               _enum: "ordinal",
+               _value: "allEnum"
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         }
+      ],
+      {}
+   );
+}
+
+async function runModalFunction() {
+   await executeAsModal(actionCommands, {"commandName": "Action Commands"});
+}
+
+await runModalFunction();
+// Events recognized as notifiers are not re-playable in most of the cases. There is high chance that generated code won't work.
+
+const {executeAsModal} = require("photoshop").core;
+const {batchPlay} = require("photoshop").action;
+
+async function actionCommands() {
+   const result = await batchPlay(
+      [
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "channel",
+                  _enum: "channel",
+                  _value: "RGB"
+               }
+            ],
+            makeVisible: false,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "select",
+            _target: [
+               {
+                  _ref: "channel",
+                  _enum: "channel",
+                  _value: "RGB"
+               }
+            ],
+            makeVisible: false,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 268,
+            name: "New Channel Mixer Layer",
+            hasEnglish: true,
+            itemIndex: 14,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "channelMixer",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  },
+                  red: {
+                     _obj: "channelMatrix",
+                     red: {
+                        _unit: "percentUnit",
+                        _value: 100
+                     }
+                  },
+                  grain: {
+                     _obj: "channelMatrix",
+                     grain: {
+                        _unit: "percentUnit",
+                        _value: 100
+                     }
+                  },
+                  blue: {
+                     _obj: "channelMatrix",
+                     blue: {
+                        _unit: "percentUnit",
+                        _value: 100
+                     }
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "channelMixer",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  },
+                  red: {
+                     _obj: "channelMatrix",
+                     red: {
+                        _unit: "percentUnit",
+                        _value: 100
+                     }
+                  },
+                  grain: {
+                     _obj: "channelMatrix",
+                     grain: {
+                        _unit: "percentUnit",
+                        _value: 100
+                     }
+                  },
+                  blue: {
+                     _obj: "channelMatrix",
+                     blue: {
+                        _unit: "percentUnit",
+                        _value: 100
+                     }
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 269,
+            name: "New Color Lookup Layer",
+            hasEnglish: true,
+            itemIndex: 15,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 270,
+            name: "New Selective Color Layer",
+            hasEnglish: true,
+            itemIndex: 16,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "selectiveColor",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "selectiveColor",
+                  presetKind: {
+                     _enum: "presetKindType",
+                     _value: "presetKindDefault"
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 271,
+            name: "New Color Lookup Layer",
+            hasEnglish: true,
+            itemIndex: 17,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _class: "colorLookup"
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _class: "colorLookup"
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 272,
+            name: "New Invert Layer",
+            hasEnglish: true,
+            itemIndex: 18,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _class: "invert"
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _class: "invert"
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 273,
+            name: "New Posterize Layer",
+            hasEnglish: true,
+            itemIndex: 19,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "posterization",
+                  levels: 4
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "posterization",
+                  levels: 4
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 274,
+            name: "New Threshold Layer",
+            hasEnglish: true,
+            itemIndex: 20,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "thresholdClassEvent",
+                  level: 128
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "thresholdClassEvent",
+                  level: 128
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 275,
+            name: "New Gradient Map Layer",
+            hasEnglish: true,
+            itemIndex: 21,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "gradientMapClass",
+                  gradientsInterpolationMethod: {
+                     _enum: "gradientInterpolationMethodType",
+                     _value: "smooth"
+                  },
+                  gradient: {
+                     _obj: "gradientClassEvent",
+                     name: "Foreground to Background",
+                     gradientForm: {
+                        _enum: "gradientForm",
+                        _value: "customStops"
+                     },
+                     interfaceIconFrameDimmed: 4096,
+                     colors: [
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 0,
+                              grain: 0,
+                              blue: 0
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 255,
+                              grain: 255,
+                              blue: 255
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ],
+                     transparency: [
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 100
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 100
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ]
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "adjustmentLayer"
+               }
+            ],
+            using: {
+               _obj: "adjustmentLayer",
+               type: {
+                  _obj: "gradientMapClass",
+                  gradientsInterpolationMethod: {
+                     _enum: "gradientInterpolationMethodType",
+                     _value: "smooth"
+                  },
+                  gradient: {
+                     _obj: "gradientClassEvent",
+                     name: "Foreground to Background",
+                     gradientForm: {
+                        _enum: "gradientForm",
+                        _value: "customStops"
+                     },
+                     interfaceIconFrameDimmed: 4096,
+                     colors: [
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 0,
+                              grain: 0,
+                              blue: 0
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 255,
+                              grain: 255,
+                              blue: 255
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ],
+                     transparency: [
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 100
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 100
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ]
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 1,
+            state: {
+               _enum: "state",
+               _value: "enter"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Color Picker",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 0,
+            state: {
+               _enum: "state",
+               _value: "exit"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Color Picker",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 276,
+            name: "New Color Fill Layer",
+            hasEnglish: true,
+            itemIndex: 22,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "contentLayer"
+               }
+            ],
+            using: {
+               _obj: "contentLayer",
+               type: {
+                  _obj: "solidColorLayer",
+                  color: {
+                     _obj: "RGBColor",
+                     red: 94.0000019967556,
+                     grain: 67.08949640393257,
+                     blue: 67.08949640393257
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "contentLayer"
+               }
+            ],
+            using: {
+               _obj: "contentLayer",
+               type: {
+                  _obj: "solidColorLayer",
+                  color: {
+                     _obj: "RGBColor",
+                     red: 94.0000019967556,
+                     grain: 67.08949640393257,
+                     blue: 67.08949640393257
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 1,
+            state: {
+               _enum: "state",
+               _value: "enter"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Gradient Fill",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 0,
+            state: {
+               _enum: "state",
+               _value: "exit"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Gradient Fill",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 277,
+            name: "New Gradient Fill Layer",
+            hasEnglish: true,
+            itemIndex: 23,
+            commandID: 5033,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "contentLayer"
+               }
+            ],
+            using: {
+               _obj: "contentLayer",
+               type: {
+                  _obj: "gradientLayer",
+                  dither: true,
+                  reverse: true,
+                  gradientsInterpolationMethod: {
+                     _enum: "gradientInterpolationMethodType",
+                     _value: "smooth"
+                  },
+                  angle: {
+                     _unit: "angleUnit",
+                     _value: 90
+                  },
+                  type: {
+                     _enum: "gradientType",
+                     _value: "linear"
+                  },
+                  scale: {
+                     _unit: "percentUnit",
+                     _value: 460
+                  },
+                  noisePreSeed: 15195,
+                  gradient: {
+                     _obj: "gradientClassEvent",
+                     name: "Color to Transparent",
+                     gradientForm: {
+                        _enum: "gradientForm",
+                        _value: "customStops"
+                     },
+                     interfaceIconFrameDimmed: 4096,
+                     colors: [
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 246.0000005364418,
+                              grain: 0.0038910505827516317,
+                              blue: 0.0038910505827516317
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 246.0000005364418,
+                              grain: 0.0038910505827516317,
+                              blue: 0.0038910505827516317
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ],
+                     transparency: [
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 100
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 0
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ]
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "contentLayer"
+               }
+            ],
+            using: {
+               _obj: "contentLayer",
+               type: {
+                  _obj: "gradientLayer",
+                  dither: true,
+                  reverse: true,
+                  gradientsInterpolationMethod: {
+                     _enum: "gradientInterpolationMethodType",
+                     _value: "smooth"
+                  },
+                  angle: {
+                     _unit: "angleUnit",
+                     _value: 90
+                  },
+                  type: {
+                     _enum: "gradientType",
+                     _value: "linear"
+                  },
+                  scale: {
+                     _unit: "percentUnit",
+                     _value: 460
+                  },
+                  noisePreSeed: 15195,
+                  gradient: {
+                     _obj: "gradientClassEvent",
+                     name: "Color to Transparent",
+                     gradientForm: {
+                        _enum: "gradientForm",
+                        _value: "customStops"
+                     },
+                     interfaceIconFrameDimmed: 4096,
+                     colors: [
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 246.0000005364418,
+                              grain: 0.0038910505827516317,
+                              blue: 0.0038910505827516317
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "colorStop",
+                           color: {
+                              _obj: "RGBColor",
+                              red: 246.0000005364418,
+                              grain: 0.0038910505827516317,
+                              blue: 0.0038910505827516317
+                           },
+                           type: {
+                              _enum: "colorStopType",
+                              _value: "userStop"
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ],
+                     transparency: [
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 100
+                           },
+                           location: 0,
+                           midpoint: 50
+                        },
+                        {
+                           _obj: "transferSpec",
+                           opacity: {
+                              _unit: "percentUnit",
+                              _value: 0
+                           },
+                           location: 4096,
+                           midpoint: 50
+                        }
+                     ]
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 1,
+            state: {
+               _enum: "state",
+               _value: "enter"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Pattern Fill",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "uiInfo",
+            view: {
+               class: "TIconButton<int>",
+               toolTip: "Explore starter tutorials in Photoshop",
+               viewID: "$lvhb",
+               signature: "$icnb",
+               globalBounds: {
+                  top: 40,
+                  bottom: 67,
+                  left: 3443,
+                  right: 3469
+               },
+               globalFrameBounds: {
+                  top: 40,
+                  bottom: 67,
+                  left: 3443,
+                  right: 3469
+               },
+               shown: true,
+               visible: true,
+               type: "button",
+               control: {
+                  dimmed: true,
+                  highlighted: false,
+                  enabled: false
+               }
+            },
+            command: "getViewInfo",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "modalStateChanged",
+            level: 0,
+            state: {
+               _enum: "state",
+               _value: "exit"
+            },
+            kcanDispatchWhileModal: true,
+            title: "Pattern Fill",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "historyStateChanged",
+            documentID: 59,
+            ID: 278,
+            name: "New Pattern Fill Layer",
+            hasEnglish: true,
+            itemIndex: 24,
+            commandID: 1099,
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "contentLayer"
+               }
+            ],
+            using: {
+               _obj: "contentLayer",
+               type: {
+                  _obj: "patternLayer",
+                  pattern: {
+                     _obj: "pattern",
+                     name: "Tree Tile 4",
+                     ID: "92150a0d-bc3e-9349-adc8-869fb042a4b0"
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "make",
+            _target: [
+               {
+                  _ref: "contentLayer"
+               }
+            ],
+            using: {
+               _obj: "contentLayer",
+               type: {
+                  _obj: "patternLayer",
+                  pattern: {
+                     _obj: "pattern",
+                     name: "Tree Tile 4",
+                     ID: "92150a0d-bc3e-9349-adc8-869fb042a4b0"
+                  }
+               }
+            },
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         },
+         {
+            _obj: "uiInfo",
+            view: {
+               class: "TIconButton<int>",
+               toolTip: "Explore starter tutorials in Photoshop",
+               viewID: "$lvhb",
+               signature: "$icnb",
+               globalBounds: {
+                  top: 40,
+                  bottom: 67,
+                  left: 3443,
+                  right: 3469
+               },
+               globalFrameBounds: {
+                  top: 40,
+                  bottom: 67,
+                  left: 3443,
+                  right: 3469
+               },
+               shown: true,
+               visible: true,
+               type: "button",
+               control: {
+                  dimmed: false,
+                  highlighted: false,
+                  enabled: true
+               }
+            },
+            command: "getViewInfo",
+            _options: {
+               dialogOptions: "dontDisplay"
+            }
+         }
+      ],
+      {}
+   );
+}
+
+async function runModalFunction() {
+   await executeAsModal(actionCommands, {"commandName": "Action Commands"});
+}
+
+await runModalFunction();
