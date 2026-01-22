@@ -3655,6 +3655,84 @@ commands["doc.save"] = async function (params) {
   }
 };
 
+commands["doc.open"] = async function (params) {
+  const { path } = params;
+  if (!path) {
+    return { ok: false, changed: false, error: "path is required" };
+  }
+
+  try {
+    const fs = require("uxp").storage.localFileSystem;
+    let openedDoc = null;
+
+    await executeAsModal(
+      async () => {
+        const file = await fs.getEntryWithUrl("file:" + path);
+        openedDoc = await app.open(file);
+      },
+      { commandName: "Open Document" }
+    );
+
+    return {
+      ok: true,
+      changed: true,
+      data: {
+        documentId: openedDoc?.id,
+        name: openedDoc?.name,
+        path: path
+      }
+    };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to open document: ${error.message}` };
+  }
+};
+
+commands["doc.save_as"] = async function (params) {
+  const { path, format } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+  if (!path) {
+    return { ok: false, changed: false, error: "path is required" };
+  }
+
+  try {
+    const fs = require("uxp").storage.localFileSystem;
+
+    await executeAsModal(
+      async () => {
+        const file = await fs.getFileForSaving(path);
+        const ext = format || path.split('.').pop()?.toLowerCase();
+
+        switch (ext) {
+          case 'psd':
+            await doc.saveAs.psd(file);
+            break;
+          case 'png':
+            await doc.saveAs.png(file);
+            break;
+          case 'jpg':
+          case 'jpeg':
+            await doc.saveAs.jpg(file, { quality: 12 });
+            break;
+          case 'tiff':
+          case 'tif':
+            await doc.saveAs.tiff(file);
+            break;
+          default:
+            await doc.saveAs.psd(file);
+        }
+      },
+      { commandName: "Save As" }
+    );
+
+    return { ok: true, changed: false, data: { action: "saveAs", path: path, format: format } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Failed to save as: ${error.message}` };
+  }
+};
+
 commands["export.png"] = async function (params) {
   const { filePath, quality } = params;
   const doc = app.activeDocument;

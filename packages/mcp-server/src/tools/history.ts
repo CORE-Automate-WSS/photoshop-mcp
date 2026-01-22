@@ -1,143 +1,114 @@
-import { ToolDefinition } from "./registry.js";
-
 /**
- * History tools for undo/redo and snapshot management
- * These use batchPlay commands since history operations aren't in DOM API
+ * History Tools
+ *
+ * Tools for undo/redo and snapshot management.
+ * Uses Zod validation for type-safe parameter handling.
  */
+
+import { createTool, createSimpleTool, z } from "./factory.js";
+import type { ToolDefinition, ToolResponse } from "./registry.js";
+
+// Schemas
+const stepsSchema = z.object({
+  steps: z
+    .number()
+    .min(1)
+    .default(1)
+    .describe("Number of history states to step"),
+});
+
+const snapshotSchema = z.object({
+  name: z.string().default("Snapshot").describe("Name for the snapshot"),
+  fullDocument: z
+    .boolean()
+    .default(true)
+    .describe("Capture full document (true) or merged layers (false)"),
+});
+
+const gotoStateSchema = z.object({
+  name: z.string().optional().describe("Name of the history state to go to"),
+  index: z
+    .number()
+    .optional()
+    .describe("Index of the history state to go to (1-based)"),
+});
+
+// Tools
 export const historyTools: ToolDefinition[] = [
-  {
-    name: "ps_history_undo",
-    description: "Undo the last action in the document",
-    inputSchema: {
-      type: "object",
-      properties: {},
-    },
-    handler: async (bridge, _args) => {
-      return bridge.send("history.undo", {});
-    },
-  },
+  createSimpleTool(
+    "ps_history_undo",
+    "Undo the last action in the document",
+    "history.undo"
+  ),
 
-  {
-    name: "ps_history_redo",
-    description: "Redo the last undone action in the document",
-    inputSchema: {
-      type: "object",
-      properties: {},
-    },
-    handler: async (bridge, _args) => {
-      return bridge.send("history.redo", {});
-    },
-  },
+  createSimpleTool(
+    "ps_history_redo",
+    "Redo the last undone action in the document",
+    "history.redo"
+  ),
 
-  {
-    name: "ps_history_step_backward",
-    description: "Step backward in history by a specified number of states",
-    inputSchema: {
-      type: "object",
-      properties: {
-        steps: {
-          type: "number",
-          description: "Number of history states to step backward (default: 1)",
-          minimum: 1,
-        },
-      },
-    },
-    handler: async (bridge, args) => {
-      const steps = (args as { steps?: number }).steps ?? 1;
-      return bridge.send("history.step_backward", { steps });
-    },
-  },
+  createTool(
+    "ps_history_step_backward",
+    "Step backward in history by a specified number of states",
+    stepsSchema,
+    "history.step_backward"
+  ),
 
-  {
-    name: "ps_history_step_forward",
-    description: "Step forward in history by a specified number of states",
-    inputSchema: {
-      type: "object",
-      properties: {
-        steps: {
-          type: "number",
-          description: "Number of history states to step forward (default: 1)",
-          minimum: 1,
-        },
-      },
-    },
-    handler: async (bridge, args) => {
-      const steps = (args as { steps?: number }).steps ?? 1;
-      return bridge.send("history.step_forward", { steps });
-    },
-  },
+  createTool(
+    "ps_history_step_forward",
+    "Step forward in history by a specified number of states",
+    stepsSchema,
+    "history.step_forward"
+  ),
 
-  {
-    name: "ps_history_snapshot_create",
-    description: "Create a snapshot of the current document state",
-    inputSchema: {
-      type: "object",
-      properties: {
-        name: {
-          type: "string",
-          description: "Name for the snapshot",
-        },
-        fullDocument: {
-          type: "boolean",
-          description: "Capture full document (true) or merged layers (false). Default: true",
-        },
-      },
-    },
-    handler: async (bridge, args) => {
-      const { name, fullDocument } = args as { name?: string; fullDocument?: boolean };
-      return bridge.send("history.snapshot_create", {
-        name: name || "Snapshot",
-        fullDocument: fullDocument !== false,
-      });
-    },
-  },
+  createTool(
+    "ps_history_snapshot_create",
+    "Create a snapshot of the current document state",
+    snapshotSchema,
+    "history.snapshot_create"
+  ),
 
+  // Special handling for goto_state - needs validation that at least one param is provided
   {
     name: "ps_history_goto_state",
     description: "Go to a specific history state by name or index",
     inputSchema: {
       type: "object",
       properties: {
-        name: {
-          type: "string",
-          description: "Name of the history state to go to",
-        },
-        index: {
-          type: "number",
-          description: "Index of the history state to go to (1-based)",
-        },
+        name: { type: "string", description: "Name of the history state" },
+        index: { type: "number", description: "Index of the history state (1-based)" },
       },
     },
-    handler: async (bridge, args) => {
-      const { name, index } = args as { name?: string; index?: number };
+    handler: async (bridge, args): Promise<ToolResponse> => {
+      const result = gotoStateSchema.safeParse(args);
+      if (!result.success) {
+        return {
+          ok: false,
+          changed: false,
+          error: `Validation failed: ${result.error.message}`,
+        };
+      }
+      const { name, index } = result.data;
       if (!name && !index) {
-        return { ok: false, changed: false, error: "Either name or index must be provided" };
+        return {
+          ok: false,
+          changed: false,
+          error: "Either name or index must be provided",
+        };
       }
       return bridge.send("history.goto_state", { name, index });
     },
   },
 
-  {
-    name: "ps_history_clear",
-    description: "Clear all history states (cannot be undone)",
-    inputSchema: {
-      type: "object",
-      properties: {},
-    },
-    handler: async (bridge, _args) => {
-      return bridge.send("history.clear", {});
-    },
-  },
+  createSimpleTool(
+    "ps_history_clear",
+    "Clear all history states (cannot be undone)",
+    "history.clear"
+  ),
 
-  {
-    name: "ps_history_get_states",
-    description: "Get a list of current history states",
-    inputSchema: {
-      type: "object",
-      properties: {},
-    },
-    handler: async (bridge, _args) => {
-      return bridge.send("history.get_states", {});
-    },
-  },
+  createSimpleTool(
+    "ps_history_get_states",
+    "Get a list of current history states",
+    "history.get_states"
+  ),
 ];
