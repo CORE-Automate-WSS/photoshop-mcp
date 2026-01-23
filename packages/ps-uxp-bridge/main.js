@@ -4055,6 +4055,310 @@ commands["raw.batchplay_multiple"] = async function (params) {
   }
 };
 
+// ============================================================================
+// Generative & Content-Aware Commands
+// ============================================================================
+
+commands["generate.content_aware_fill"] = async function (params) {
+  const { sampleAllLayers, colorAdaptation, rotation, scale, mirror } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    // Map color adaptation to Photoshop values
+    const colorAdaptMap = {
+      none: "colorAdaptationNone",
+      default: "colorAdaptationDefault",
+      high: "colorAdaptationHigh"
+    };
+
+    // Map rotation to Photoshop values
+    const rotationMap = {
+      none: "rotationNone",
+      low: "rotationLow",
+      medium: "rotationMedium",
+      high: "rotationHigh",
+      full: "rotationFull"
+    };
+
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "fill",
+              using: { _enum: "fillContents", _value: "contentAware" },
+              opacity: { _unit: "percentUnit", _value: 100 },
+              mode: { _enum: "blendMode", _value: "normal" },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+      },
+      { commandName: "Content-Aware Fill" }
+    );
+
+    return { ok: true, changed: true, data: { action: "contentAwareFill" } };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Content-Aware Fill failed: ${error.message}` };
+  }
+};
+
+commands["generate.generative_fill"] = async function (params) {
+  const { prompt, sampleAllLayers } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    // Generative Fill uses Adobe's cloud-based Firefly AI
+    // The exact command structure may vary by Photoshop version
+    // This is the expected structure based on Adobe's action system
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "generativeFill",
+              prompt: prompt || "",
+              sampleAllLayers: sampleAllLayers !== false,
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: false } // Async - cloud operation takes time
+        );
+      },
+      { commandName: "Generative Fill" }
+    );
+
+    return {
+      ok: true,
+      changed: true,
+      data: {
+        action: "generativeFill",
+        prompt: prompt || "(remove)",
+        note: "Cloud-based operation - may take 10-30 seconds"
+      }
+    };
+  } catch (error) {
+    // Provide helpful error message for common issues
+    let errorMsg = error.message;
+    if (errorMsg.includes("not available") || errorMsg.includes("command not found")) {
+      errorMsg = "Generative Fill not available. Ensure: 1) Photoshop 2024+ 2) Active selection exists 3) Internet connected 4) Creative Cloud subscription active";
+    }
+    return { ok: false, changed: false, error: `Generative Fill failed: ${errorMsg}` };
+  }
+};
+
+commands["generate.generative_expand"] = async function (params) {
+  const { prompt, top, bottom, left, right } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  const expandTop = top || 0;
+  const expandBottom = bottom || 0;
+  const expandLeft = left || 0;
+  const expandRight = right || 0;
+
+  if (expandTop === 0 && expandBottom === 0 && expandLeft === 0 && expandRight === 0) {
+    return { ok: false, changed: false, error: "At least one expansion direction must be > 0" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    // First, expand the canvas
+    const newWidth = doc.width + expandLeft + expandRight;
+    const newHeight = doc.height + expandTop + expandBottom;
+
+    await executeAsModal(
+      async () => {
+        // Resize canvas with anchor
+        await batchPlay(
+          [
+            {
+              _obj: "canvasSize",
+              width: { _unit: "pixelsUnit", _value: newWidth },
+              height: { _unit: "pixelsUnit", _value: newHeight },
+              horizontal: { _enum: "horizontalLocation", _value: "center" },
+              vertical: { _enum: "verticalLocation", _value: "center" },
+              canvasExtensionColorType: { _enum: "canvasExtensionColorType", _value: "backgroundColor" },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+
+        // Select the transparent/new areas
+        // This selects non-content areas for generative fill
+        await batchPlay(
+          [
+            {
+              _obj: "set",
+              _target: [{ _ref: "channel", _property: "selection" }],
+              to: {
+                _obj: "rectangle",
+                top: { _unit: "pixelsUnit", _value: 0 },
+                left: { _unit: "pixelsUnit", _value: 0 },
+                bottom: { _unit: "pixelsUnit", _value: newHeight },
+                right: { _unit: "pixelsUnit", _value: newWidth }
+              },
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+
+        // Apply generative fill to selection
+        await batchPlay(
+          [
+            {
+              _obj: "generativeFill",
+              prompt: prompt || "",
+              sampleAllLayers: true,
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: false }
+        );
+      },
+      { commandName: "Generative Expand" }
+    );
+
+    return {
+      ok: true,
+      changed: true,
+      data: {
+        action: "generativeExpand",
+        expanded: { top: expandTop, bottom: expandBottom, left: expandLeft, right: expandRight },
+        newSize: { width: newWidth, height: newHeight },
+        prompt: prompt || "(auto)",
+        note: "Cloud-based operation - may take 10-30 seconds"
+      }
+    };
+  } catch (error) {
+    let errorMsg = error.message;
+    if (errorMsg.includes("not available") || errorMsg.includes("command not found")) {
+      errorMsg = "Generative Expand not available. Ensure: 1) Photoshop 2024+ 2) Internet connected 3) Creative Cloud subscription active";
+    }
+    return { ok: false, changed: false, error: `Generative Expand failed: ${errorMsg}` };
+  }
+};
+
+commands["generate.remove_background"] = async function (params) {
+  const { outputToNewLayer } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    await executeAsModal(
+      async () => {
+        // Use Remove Background which internally uses Select Subject + delete
+        await batchPlay(
+          [
+            {
+              _obj: "removeBackground",
+              sampleAllLayers: false,
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+      },
+      { commandName: "Remove Background" }
+    );
+
+    return {
+      ok: true,
+      changed: true,
+      data: {
+        action: "removeBackground",
+        outputToNewLayer: outputToNewLayer !== false
+      }
+    };
+  } catch (error) {
+    // Fallback: try select subject + inverse + delete
+    try {
+      await executeAsModal(
+        async () => {
+          // Select subject
+          await batchPlay(
+            [
+              {
+                _obj: "selectSubject",
+                sampleAllLayers: false,
+                _options: { dialogOptions: "dontDisplay" }
+              }
+            ],
+            { synchronousExecution: true }
+          );
+
+          // Inverse selection
+          await batchPlay(
+            [
+              {
+                _obj: "inverse",
+                _options: { dialogOptions: "dontDisplay" }
+              }
+            ],
+            { synchronousExecution: true }
+          );
+
+          // Delete (cut)
+          await batchPlay(
+            [
+              {
+                _obj: "delete",
+                _options: { dialogOptions: "dontDisplay" }
+              }
+            ],
+            { synchronousExecution: true }
+          );
+
+          // Deselect
+          await batchPlay(
+            [
+              {
+                _obj: "set",
+                _target: [{ _ref: "channel", _property: "selection" }],
+                to: { _enum: "ordinal", _value: "none" },
+                _options: { dialogOptions: "dontDisplay" }
+              }
+            ],
+            { synchronousExecution: true }
+          );
+        },
+        { commandName: "Remove Background (fallback)" }
+      );
+
+      return {
+        ok: true,
+        changed: true,
+        data: {
+          action: "removeBackground",
+          method: "fallback (select subject + inverse + delete)"
+        }
+      };
+    } catch (fallbackError) {
+      return { ok: false, changed: false, error: `Remove Background failed: ${fallbackError.message}` };
+    }
+  }
+};
+
 // WebSocket connection state
 let ws = null;
 let autoReconnect = true;

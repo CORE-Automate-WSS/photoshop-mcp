@@ -16,6 +16,7 @@ import { filterTools } from "./filter.js";
 import { transformTools } from "./transform.js";
 import { textTools } from "./text.js";
 import { utilityTools } from "./utility.js";
+import { generativeTools } from "./generative.js";
 
 export interface ToolResponse {
   ok: boolean;
@@ -60,7 +61,7 @@ export function createToolRegistry(bridge: PhotoshopBridge): ToolRegistry {
   const tools = new Map<string, ToolDefinition>();
 
   // Register all tool modules
-  const allTools = [...appTools, ...documentTools, ...layerTools, ...selectionTools, ...adjustmentTools, ...historyTools, ...filterTools, ...transformTools, ...textTools, ...utilityTools];
+  const allTools = [...appTools, ...documentTools, ...layerTools, ...selectionTools, ...adjustmentTools, ...historyTools, ...filterTools, ...transformTools, ...textTools, ...utilityTools, ...generativeTools];
 
   for (const tool of allTools) {
     tools.set(tool.name, tool);
