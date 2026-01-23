@@ -4110,7 +4110,7 @@ commands["generate.content_aware_fill"] = async function (params) {
 };
 
 commands["generate.generative_fill"] = async function (params) {
-  const { prompt, sampleAllLayers } = params;
+  const { prompt } = params;
   const doc = app.activeDocument;
   if (!doc) {
     return { ok: false, changed: false, error: "No active document" };
@@ -4118,18 +4118,58 @@ commands["generate.generative_fill"] = async function (params) {
 
   try {
     const { batchPlay } = require("photoshop").action;
+    const activeLayer = doc.activeLayers[0];
 
-    // Generative Fill uses Adobe's cloud-based Firefly AI
-    // The exact command structure may vary by Photoshop version
-    // This is the expected structure based on Adobe's action system
+    // syntheticFill is the actual command for Generative Fill (Adobe Firefly)
+    // Uses the "clio" service (Adobe's internal AI service name)
     await executeAsModal(
       async () => {
         await batchPlay(
           [
             {
-              _obj: "generativeFill",
+              _obj: "syntheticFill",
+              _target: [
+                {
+                  _ref: "document",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+                }
+              ],
+              documentID: doc.id,
+              layerID: activeLayer ? activeLayer.id : undefined,
               prompt: prompt || "",
-              sampleAllLayers: sampleAllLayers !== false,
+              serviceID: "clio",
+              workflowType: {
+                _enum: "genWorkflow",
+                _value: "in_painting"
+              },
+              serviceOptionsList: {
+                clio: {
+                  _obj: "clio",
+                  gi_PROMPT: prompt || "",
+                  gi_MODE: "tinp",
+                  gi_SEED: -1,
+                  gi_NUM_STEPS: -1,
+                  gi_GUIDANCE: 6,
+                  gi_SIMILARITY: 0,
+                  gi_CROP: false,
+                  gi_DILATE: false,
+                  gi_CONTENT_PRESERVE: 0,
+                  gi_ENABLE_PROMPT_FILTER: true,
+                  dualCrop: true
+                }
+              },
+              serviceVersion: "clio3",
+              workflow_to_active_service_identifier_map: {
+                in_painting: "clio3",
+                generativeUpscale: "clio_f16_async",
+                out_painting: "clio3",
+                gen_harmonize: "clio3",
+                text_to_image: "clio3",
+                generate_background: "clio3",
+                generate_similar: "clio3",
+                instruct_edit: "clio3"
+              },
               _options: { dialogOptions: "dontDisplay" }
             }
           ],
@@ -4144,8 +4184,8 @@ commands["generate.generative_fill"] = async function (params) {
       changed: true,
       data: {
         action: "generativeFill",
-        prompt: prompt || "(remove)",
-        note: "Cloud-based operation - may take 10-30 seconds"
+        prompt: prompt || "(remove/inpaint)",
+        note: "Cloud-based operation - may take 10-30 seconds. Check Photoshop for generated variations."
       }
     };
   } catch (error) {
@@ -4219,13 +4259,54 @@ commands["generate.generative_expand"] = async function (params) {
           { synchronousExecution: true }
         );
 
-        // Apply generative fill to selection
+        // Apply generative fill to selection using syntheticFill with out_painting workflow
+        const activeLayer = doc.activeLayers[0];
         await batchPlay(
           [
             {
-              _obj: "generativeFill",
+              _obj: "syntheticFill",
+              _target: [
+                {
+                  _ref: "document",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+                }
+              ],
+              documentID: doc.id,
+              layerID: activeLayer ? activeLayer.id : undefined,
               prompt: prompt || "",
-              sampleAllLayers: true,
+              serviceID: "clio",
+              workflowType: {
+                _enum: "genWorkflow",
+                _value: "out_painting"
+              },
+              serviceOptionsList: {
+                clio: {
+                  _obj: "clio",
+                  gi_PROMPT: prompt || "",
+                  gi_MODE: "toutp",
+                  gi_SEED: -1,
+                  gi_NUM_STEPS: -1,
+                  gi_GUIDANCE: 6,
+                  gi_SIMILARITY: 0,
+                  gi_CROP: false,
+                  gi_DILATE: false,
+                  gi_CONTENT_PRESERVE: 0,
+                  gi_ENABLE_PROMPT_FILTER: true,
+                  dualCrop: true
+                }
+              },
+              serviceVersion: "clio3",
+              workflow_to_active_service_identifier_map: {
+                in_painting: "clio3",
+                generativeUpscale: "clio_f16_async",
+                out_painting: "clio3",
+                gen_harmonize: "clio3",
+                text_to_image: "clio3",
+                generate_background: "clio3",
+                generate_similar: "clio3",
+                instruct_edit: "clio3"
+              },
               _options: { dialogOptions: "dontDisplay" }
             }
           ],
@@ -4243,7 +4324,7 @@ commands["generate.generative_expand"] = async function (params) {
         expanded: { top: expandTop, bottom: expandBottom, left: expandLeft, right: expandRight },
         newSize: { width: newWidth, height: newHeight },
         prompt: prompt || "(auto)",
-        note: "Cloud-based operation - may take 10-30 seconds"
+        note: "Cloud-based operation - may take 10-30 seconds. Check Photoshop for generated variations."
       }
     };
   } catch (error) {
@@ -4356,6 +4437,57 @@ commands["generate.remove_background"] = async function (params) {
     } catch (fallbackError) {
       return { ok: false, changed: false, error: `Remove Background failed: ${fallbackError.message}` };
     }
+  }
+};
+
+commands["generate.select_variation"] = async function (params) {
+  const { index } = params;
+  const doc = app.activeDocument;
+  if (!doc) {
+    return { ok: false, changed: false, error: "No active document" };
+  }
+
+  if (index === undefined || index < 0 || index > 3) {
+    return { ok: false, changed: false, error: "index must be between 0 and 3" };
+  }
+
+  try {
+    const { batchPlay } = require("photoshop").action;
+
+    await executeAsModal(
+      async () => {
+        await batchPlay(
+          [
+            {
+              _obj: "selectGeneratedVariation",
+              _target: [
+                {
+                  _ref: "layer",
+                  _enum: "ordinal",
+                  _value: "targetEnum"
+                }
+              ],
+              index: index,
+              remainingVariationsCount: 3,
+              _options: { dialogOptions: "dontDisplay" }
+            }
+          ],
+          { synchronousExecution: true }
+        );
+      },
+      { commandName: "Select Variation" }
+    );
+
+    return {
+      ok: true,
+      changed: true,
+      data: {
+        action: "selectVariation",
+        selectedIndex: index
+      }
+    };
+  } catch (error) {
+    return { ok: false, changed: false, error: `Select Variation failed: ${error.message}` };
   }
 };
 

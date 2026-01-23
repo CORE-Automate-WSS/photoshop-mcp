@@ -75,6 +75,14 @@ const removeBackgroundSchema = z.object({
     .describe("Output result to new layer (preserves original)"),
 });
 
+const selectVariationSchema = z.object({
+  index: z
+    .number()
+    .min(0)
+    .max(3)
+    .describe("Variation index to select (0-3, typically 3 variations are generated)"),
+});
+
 // Tools
 export const generativeTools: ToolDefinition[] = [
   // Content-Aware Fill - works locally, reliable
@@ -159,5 +167,13 @@ export const generativeTools: ToolDefinition[] = [
     "Remove the background from the image using AI-powered subject selection. Selects the main subject and removes everything else.",
     removeBackgroundSchema,
     "generate.remove_background"
+  ),
+
+  // Select Variation - after generative fill creates multiple options
+  createTool(
+    "ps_select_variation",
+    "Select a specific variation from Generative Fill results. After Generative Fill runs, it creates multiple variations (typically 3). Use this to switch between them.",
+    selectVariationSchema,
+    "generate.select_variation"
   ),
 ];
